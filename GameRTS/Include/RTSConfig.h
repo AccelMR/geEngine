@@ -31,6 +31,18 @@ class GameOptions : public Module<GameOptions>
 
   //Map Values
   static bool s_MapShowGrid;
+
+  static bool s_StartPos;
+  static bool s_EndPos;
+
+  //Terrain
+  static bool s_IsEditorActive;
+  static bool s_IsPathMenuActive;
+  static int s_SizeOfBrush;
+
+  //Path finders
+  static int s_PathFinderSelected;
+  
   static Color s_MapGridColor;
 
   //Global Constants

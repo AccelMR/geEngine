@@ -8,6 +8,7 @@
 
 #include "RTSConfig.h"
 
+
 using namespace geEngineSDK;
 
 class RTSTexture;
@@ -18,9 +19,32 @@ namespace TERRAIN_TYPE {
     kGrass,
     kMarsh,
     kObstacle,
-    kNumObjects
+    kNumObjects, //How many terrains we have
+  };
+
+  static Vector<String> ES = {
+    "Water",
+    "Grass" ,
+    "Marsh",
+    "Obstacle",
   };
 }
+
+ enum PFMARK
+{
+  NONE=0,
+  START,
+  N,
+  NE,
+  E,
+  SE,
+  S,
+  SO,
+  O,
+  NO,
+  END,
+  NUMOBJ
+};
 
 class RTSTiledMap
 {
@@ -54,14 +78,37 @@ class RTSTiledMap
       m_cost = cost;
     }
 
+    void
+    setMark(const uint8 mark) {
+      m_pfMark = mark;
+    }
+
+    uint8
+    getMark() const {
+      return m_pfMark;
+    }
+
+    void
+    setVisited(bool visited) {
+      m_visited = visited;
+    }
+
+    bool
+    getVisited() { 
+      return m_visited; 
+    }
+
    private:
     uint8 m_idType;
     int8 m_cost;
+    uint8 m_pfMark;
+    bool m_visited;
   };
 
  public:
   RTSTiledMap();
   RTSTiledMap(sf::RenderTarget* pTarget, const Vector2I& mapSize);
+  RTSTiledMap( const Vector2I& mapSize);
   ~RTSTiledMap();
 
  public:
@@ -93,6 +140,18 @@ class RTSTiledMap
 
   void
   setCost(const int32 x, const int32 y, const int8 cost);
+
+  void
+  setMark(const uint8 x, const uint8 y, const uint8 mark);
+
+  void
+  setVisited(const uint8 x, const uint8 y, const bool visited);
+
+  bool
+  getVisited(const uint8 x, const uint8 y);
+
+  uint8
+  getMark(const int32 x, const int32 y) const;
 
   int8
   getType(const int32 x, const int32 y) const;
@@ -165,6 +224,7 @@ class RTSTiledMap
   Vector2I m_mapSize;
   Vector<MapTile> m_mapGrid;
   Vector<RTSTexture> m_mapTextures;
+  Vector<RTSTexture> m_TileMark;
 
   Vector2I m_iCamera;
   Vector2 m_fCamera;
@@ -177,4 +237,7 @@ class RTSTiledMap
   Vector2I m_PreCalc_ScreenDeface;
 
   sf::RenderTarget* m_pTarget;
+
+  Vector2I m_refEndMark, m_refStartMark;
+  bool m_StartMarked, m_EndMarked;
 };

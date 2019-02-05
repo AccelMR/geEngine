@@ -10,10 +10,25 @@ RTSTiledMap::RTSTiledMap() {
   m_scrEnd = Vector2I::ZERO;
   m_iCamera = Vector2I::ZERO;
   m_fCamera = Vector2::ZERO;
+  m_StartMarked = false;
+  m_EndMarked = false;
+  m_refEndMark = Vector2I::ZERO;
+  m_refStartMark = Vector2I::ZERO;
 }
 
 RTSTiledMap::RTSTiledMap(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
   init(pTarget, mapSize);
+}
+
+RTSTiledMap::RTSTiledMap(const Vector2I & mapSize)
+{
+  m_mapGrid.resize(mapSize.x * mapSize.y);
+  
+  for (std::vector<MapTile>::iterator it = m_mapGrid.begin(); 
+       it != m_mapGrid.end(); 
+       it++){
+    it->setVisited(false);
+  }
 }
 
 RTSTiledMap::~RTSTiledMap() {
@@ -33,6 +48,7 @@ RTSTiledMap::init(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
   setCameraStartPosition(0, 0);
 
   m_mapTextures.resize(TERRAIN_TYPE::kNumObjects);
+  m_TileMark.resize(PFMARK::NUMOBJ);
 
   String textureName;
   for (uint32 i = 0; i < TERRAIN_TYPE::kNumObjects; ++i) {
@@ -44,6 +60,12 @@ RTSTiledMap::init(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
     m_mapTextures[i].loadFromFile(m_pTarget, textureName);
   }
 
+  //Arrows and flags loader
+  for (uint32 i = 1; i < PFMARK::NUMOBJ; ++i) {
+    textureName = "Textures/Terrain/mark_" + toString(i) + ".png";
+    m_TileMark[i].loadFromFile(m_pTarget, textureName);
+  }
+
   preCalc();
 
   return true;
@@ -53,6 +75,7 @@ void
 RTSTiledMap::destroy() {
   m_mapGrid.clear();
   m_mapTextures.clear();
+  m_TileMark.clear();
 
   m_mapSize = Vector2I::ZERO;
   setCameraStartPosition(0, 0);
@@ -69,6 +92,51 @@ void
 RTSTiledMap::setCost(const int32 x, const int32 y, const int8 cost) {
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   m_mapGrid[(y*m_mapSize.x) + x].setCost(cost);
+}
+
+void 
+RTSTiledMap::setMark(const uint8 x, const uint8 y, const uint8 mark){
+  GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
+  if (mark == PFMARK::START)
+  {
+    if (m_StartMarked)
+    {
+      m_mapGrid[(m_refStartMark.y*m_mapSize.x) + m_refStartMark.x].setMark(PFMARK::NONE);
+    }
+    m_StartMarked = true;
+    m_refStartMark = { x,y };
+  }
+  if (mark == PFMARK::END)
+  {
+    if (m_EndMarked)
+    {
+      m_mapGrid[(m_refEndMark.y*m_mapSize.x) + m_refEndMark.x].setMark(PFMARK::NONE);
+    }
+    m_EndMarked = true;
+    m_refEndMark = { x,y };
+  }
+  m_mapGrid[(y*m_mapSize.x) + x].setMark(mark);
+}
+
+void 
+RTSTiledMap::setVisited(const uint8 x, const uint8 y, const bool visited)
+{
+  GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
+  m_mapGrid[(y*m_mapSize.x) + x].setVisited(visited);
+}
+
+bool 
+RTSTiledMap::getVisited(const uint8 x, const uint8 y)
+{
+  GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
+  return m_mapGrid[(y*m_mapSize.x) + x].getVisited();
+}
+
+uint8
+RTSTiledMap::getMark(const int32 x, const int32 y) const
+{
+  GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
+  return m_mapGrid[(y*m_mapSize.x) + x].getMark();
 }
 
 int8
@@ -161,6 +229,7 @@ RTSTiledMap::render() {
   int32 tmpX = 0;
   int32 tmpY = 0;
   int32 tmpTypeTile = 0;
+  int32 tmpMarkTile = 0;
   Vector2I clipRect;
 
   int32 tileIniX = 0, tileIniY = 0;
@@ -187,16 +256,30 @@ RTSTiledMap::render() {
           (tmpY + TILESIZE_X) < m_scrStart.y) {
         continue;
       }
-
+/*      auto tileRef = m_mapGrid[(iterY*m_mapSize.x) + iterX];*/
       tmpTypeTile = m_mapGrid[(iterY*m_mapSize.x) + iterX].getType();
+      tmpMarkTile = m_mapGrid[(iterY*m_mapSize.x) + iterX].getMark();
+
       RTSTexture& refTexture = m_mapTextures[tmpTypeTile];
 
       clipRect.x = (iterX << GameOptions::BITSHFT_TILESIZE.x) % refTexture.getWidth();
       clipRect.y = (iterY << GameOptions::BITSHFT_TILESIZE.y) % refTexture.getHeight();
 
       refTexture.setPosition(tmpX, tmpY);
+
+      //Color randColor;
+      //randColor = randColor.makeRandomColor();
+      //refTexture.setColor(randColor.r, randColor.g, randColor.b, randColor.a);
+      
       refTexture.setSrcRect(clipRect.x, clipRect.y, TILESIZE_X, TILESIZE_Y);
       refTexture.draw();
+      
+      if (tmpMarkTile != PFMARK::NONE) {
+        RTSTexture& refMark = m_TileMark[tmpMarkTile];
+        refMark.setPosition(tmpX, tmpY);
+        refMark.draw();
+      }
+
     }
   }
   
@@ -262,6 +345,7 @@ RTSTiledMap::render() {
 RTSTiledMap::MapTile::MapTile() {
   m_idType = 1;
   m_cost = 1;
+  m_pfMark = PFMARK::NONE;
 }
 
 RTSTiledMap::MapTile::MapTile(const int8 idType, const int8 cost) {

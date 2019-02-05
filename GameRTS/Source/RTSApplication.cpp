@@ -15,14 +15,15 @@
 #include <geUnicode.h>
 
 #include <SFML/Graphics.hpp>
-
+#include <imgui-sfml.h>
 #include <commdlg.h>
 #include <imgui.h>
-#include <imgui-sfml.h>
+
 
 #include "RTSConfig.h"
 #include "RTSApplication.h"
 #include "RTSTiledMap.h"
+#include "GridWalker.h"
 
 void
 loadMapFromFile(RTSApplication* pApp);
@@ -30,11 +31,16 @@ loadMapFromFile(RTSApplication* pApp);
 void
 mainMenu(RTSApplication* pApp);
 
+//Terrain Modifier
+int g_iTerrainSelected = 0;
+int g_iStartSelection = 0;
+int g_iPathFinders = 0;
+
 RTSApplication::RTSApplication()
   : m_window(nullptr),
-    m_fpsTimer(0.0f),
-    m_fpsCounter(0.0f),
-    m_framesPerSecond(0.0f)
+  m_fpsTimer(0.0f),
+  m_fpsCounter(0.0f),
+  m_framesPerSecond(0.0f)
 {}
 
 RTSApplication::~RTSApplication() {}
@@ -142,6 +148,9 @@ RTSApplication::gameLoop() {
 
 void
 RTSApplication::updateFrame() {
+  static sf::Clock myClock;
+  sf::Time elapsedTime = myClock.getElapsedTime();
+
   float deltaTime = g_time().getFrameDelta();
   
   m_fpsTimer += deltaTime;
@@ -153,7 +162,7 @@ RTSApplication::updateFrame() {
   m_fpsCounter += 1.0f;
 
   //Update the interface
-  ImGui::SFML::Update(*m_window, deltaTime);
+  ImGui::SFML::Update(*m_window, elapsedTime);
 
   //Begin the menu 
   mainMenu(this);
@@ -163,6 +172,33 @@ RTSApplication::updateFrame() {
   Vector2I mousePosition;
   mousePosition.x = sf::Mouse::getPosition(*m_window).x;
   mousePosition.y = sf::Mouse::getPosition(*m_window).y;
+
+    auto map = m_gameWorld.getTiledMap();
+    int32 tileX, tileY;
+    sf::Vector2i mousePos = sf::Mouse::getPosition();
+    map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
+
+  //Terrain editor
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+      GameOptions::s_IsEditorActive &&
+      !ImGui::IsMouseHoveringAnyWindow() &&
+      !ImGui::IsAnyItemHovered()) {
+
+    for (SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++) {
+      for (SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++) {
+        map->setType(tileX + i, tileY + j, g_iTerrainSelected);
+      }
+    }
+  }
+
+  //Path finder Menu
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&
+      GameOptions::s_IsPathMenuActive &&
+      !ImGui::IsMouseHoveringAnyWindow() &&
+      !ImGui::IsAnyItemHovered()) {
+   
+    map->setMark(tileX, tileY, g_iStartSelection);
+  }
 
   if (0 == mousePosition.x ||
       sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
@@ -312,7 +348,66 @@ mainMenu(RTSApplication* pApp) {
       10240.0f);
 
     ImGui::Checkbox("Show grid", &GameOptions::s_MapShowGrid);
+
+    ImGui::Spacing(5);
+
+    ImGui::Text("Extra Windows");
+    ImGui::Separator();
+
+    ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive);
+    ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive);
   }
   ImGui::End();
+
+  if (GameOptions::s_IsEditorActive){
+    GameOptions::s_IsPathMenuActive = false;
+
+    // Editor
+    ImGui::Begin("Editor");
+    {
+      ImGui::Separator();
+      ImGui::Text("Terrain Texture");
+
+
+      for (SIZE_T i = 0; i < TERRAIN_TYPE::kNumObjects; i++) {
+        ImGui::RadioButton(TERRAIN_TYPE::ES[i].c_str(),
+          &g_iTerrainSelected,
+          static_cast<TERRAIN_TYPE::E> (i));
+      }
+
+      ImGui::SliderInt("Brush Size", &GameOptions::s_SizeOfBrush, 1, 10);
+
+    }
+    ImGui::End();
+  }
+
+  if (GameOptions::s_IsPathMenuActive) {
+    GameOptions::s_IsEditorActive = false;
+
+    ImGui::Begin("Path finders");
+    {
+      ImGui::Text("Select Positions");
+      ImGui::Spacing(3);
+
+      ImGui::RadioButton("Start Position", &g_iStartSelection, 1);
+      ImGui::RadioButton("End Position", &g_iStartSelection, 10);
+      ImGui::Spacing(4);
+
+      ImGui::Separator();
+      ImGui::Text("Path Finder");
+      ImGui::Spacing(3);
+
+      for (SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++) {
+        ImGui::RadioButton(TYPE_PATH_FINDER::ES[i].c_str(),
+          &g_iPathFinders,
+          static_cast<TYPE_PATH_FINDER::E> (i));
+      }
+
+      ImGui::Spacing(5);
+      ImGui::Button("Start", { 200, 50 });
+
+    }
+    ImGui::End();
+  }
 
 }
