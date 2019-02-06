@@ -1,58 +1,46 @@
-#include "..\Include\BreadthFirstSearch.h"
+#include "..\Include\DepthFirstSearch.h"
 
-/*
-*/
-BreadthFirstSearch::BreadthFirstSearch():
-  m_nodeGrid(nullptr)
+DepthFirstSearch::DepthFirstSearch()
 {
-  m_StartPos = Vector2I::ZERO;
-  m_EndPos = Vector2I::ZERO;
 }
 
-/*
-*/
-BreadthFirstSearch::BreadthFirstSearch(RTSTiledMap* pMap) : GridWalker(pMap)
+DepthFirstSearch::DepthFirstSearch(RTSTiledMap * map) :GridWalker(map)
 {}
 
-/*
-*/
-BreadthFirstSearch::~BreadthFirstSearch()
+DepthFirstSearch::~DepthFirstSearch()
 {
-  Destroy();
 }
 
-
-bool BreadthFirstSearch::Init()
+bool DepthFirstSearch::Init()
 {
-  if (m_nodeGrid) { 
+  if (m_nodeGrid) {
     Destroy();
   }
   m_nodeGrid = new RTSTiledMap(m_pTiledMap->getMapSize());
   Reset();
   return false;
-
 }
 
-void BreadthFirstSearch::Destroy()
+void DepthFirstSearch::Destroy()
 {
-  if (nullptr != m_nodeGrid){
+  if (nullptr != m_nodeGrid) {
     delete m_nodeGrid;
   }
   m_nodeGrid = nullptr;
 }
 
-WALKSTATE::E BreadthFirstSearch::Update()
+WALKSTATE::E DepthFirstSearch::Update()
 {
   if (m_open.size() > 0)
   {
-    m_use = *m_open.front();	
+    m_use = *m_open.top();
     m_open.pop();
     m_nodeGrid->setVisited(m_use.x, m_use.y, true);
 
 
     if (m_use == m_end)
     {
-      return WALKSTATE::REACHEDGOAL;	
+      return WALKSTATE::REACHEDGOAL;
     }
 
     int32 x, y;
@@ -69,7 +57,7 @@ WALKSTATE::E BreadthFirstSearch::Update()
     y = m_use.y + 1;
     if (m_use.x < (m_pTiledMap->getMapSize().x - 1) && m_use.y < (m_pTiledMap->getMapSize().y - 1))
     {
-      visitGridNode(x, y);	
+      visitGridNode(x, y);
     }
 
     x = m_use.x;
@@ -87,7 +75,7 @@ WALKSTATE::E BreadthFirstSearch::Update()
       visitGridNode(x, y);
     }
 
- 
+
     x = m_use.x - 1;
     y = m_use.y;
     if (m_use.x > 0)
@@ -100,10 +88,10 @@ WALKSTATE::E BreadthFirstSearch::Update()
     y = m_use.y - 1;
     if (m_use.x > 0 && m_use.y > 0)
     {
-      visitGridNode(x, y);	
+      visitGridNode(x, y);
     }
 
-   
+
     x = m_use.x;
     y = m_use.y - 1;
     if (m_use.y > 0)
@@ -124,11 +112,11 @@ WALKSTATE::E BreadthFirstSearch::Update()
   return WALKSTATE::UNABLETOREACHGOAL;
 }
 
-void BreadthFirstSearch::Render()
-{//TODO: Render
+void DepthFirstSearch::Render()
+{
 }
 
-void BreadthFirstSearch::Reset()
+void DepthFirstSearch::Reset()
 {
   while (m_open.size() > 0)
   {
@@ -150,18 +138,16 @@ void BreadthFirstSearch::Reset()
   m_start = m_StartPos;
   m_nodeGrid->setVisited(m_start.x, m_start.y, true);
 
-  //Obtenemos el punto final, obtenemos el nodo y lo marcamos como el nodo final
   getEndPosition(x, y);
   m_end = m_EndPos;
 
-  //Agregamos el nodo inicial a la lista abierta
   m_open.push(&m_start);
 }
 
-void BreadthFirstSearch::visitGridNode(int32 x, int32 y)
+void DepthFirstSearch::visitGridNode(int32 x, int32 y)
 {
   if (m_nodeGrid->getVisited(x, y) ||
-      m_nodeGrid->getType(x,y) == TERRAIN_TYPE::kObstacle) {
+    m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle) {
     return;
   }
 
