@@ -31,6 +31,7 @@ bool DepthFirstSearch::Init()
     Destroy();
   }
   m_nodeGrid = new RTSTiledMap(m_pTiledMap->getMapSize());
+  return false;
 
 }
 
@@ -54,16 +55,6 @@ void DepthFirstSearch::Render()
 }
 
 void DepthFirstSearch::Reset()
-{
-  throw std::logic_error("The method or operation is not implemented.");
-}
-
-bool DepthFirstSearch::weightedGraphSupported()
-{
-  throw std::logic_error("The method or operation is not implemented.");
-}
-
-bool DepthFirstSearch::heuristicsSupported()
 {
   throw std::logic_error("The method or operation is not implemented.");
 }

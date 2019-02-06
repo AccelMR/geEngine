@@ -258,7 +258,6 @@ RTSTiledMap::render() {
       }
 /*      auto tileRef = m_mapGrid[(iterY*m_mapSize.x) + iterX];*/
       tmpTypeTile = m_mapGrid[(iterY*m_mapSize.x) + iterX].getType();
-      tmpMarkTile = m_mapGrid[(iterY*m_mapSize.x) + iterX].getMark();
 
       RTSTexture& refTexture = m_mapTextures[tmpTypeTile];
 
@@ -273,13 +272,6 @@ RTSTiledMap::render() {
       
       refTexture.setSrcRect(clipRect.x, clipRect.y, TILESIZE_X, TILESIZE_Y);
       refTexture.draw();
-      
-      if (tmpMarkTile != PFMARK::NONE) {
-        RTSTexture& refMark = m_TileMark[tmpMarkTile];
-        refMark.setPosition(tmpX, tmpY);
-        refMark.draw();
-      }
-
     }
   }
   
@@ -340,6 +332,45 @@ RTSTiledMap::render() {
 
     m_pTarget->draw(&gridLines[0], gridLines.size(), sf::Lines);
   }
+
+#ifdef MAP_IS_ISOMETRIC
+  getScreenToMapCoords(m_scrStart.x, m_scrStart.y, tileIniX, trashCoord);
+  getScreenToMapCoords(m_scrEnd.x, m_scrEnd.y, tileFinX, trashCoord);
+
+  getScreenToMapCoords(m_scrEnd.x, m_scrStart.y, trashCoord, tileIniY);
+  getScreenToMapCoords(m_scrStart.x, m_scrEnd.y, trashCoord, tileFinY);
+#else
+  getScreenToMapCoords(m_scrStart.x, m_scrStart.y, tileIniX, tileIniY);
+  getScreenToMapCoords(m_scrEnd.x, m_scrEnd.y, tileFinX, tileFinY);
+#endif
+  for (int32 iterX = tileIniX; iterX <= tileFinX; ++iterX) {
+    for (int32 iterY = tileIniY; iterY <= tileFinY; ++iterY) {
+
+      getMapToScreenCoords(iterX, iterY, tmpX, tmpY);
+      if (tmpX > m_scrEnd.x ||
+        tmpY > m_scrEnd.y ||
+        (tmpX + TILESIZE_X) < m_scrStart.x ||
+        (tmpY + TILESIZE_X) < m_scrStart.y) {
+        continue;
+      }
+
+      tmpMarkTile = m_mapGrid[(iterY*m_mapSize.x) + iterX].getMark();
+
+      if (tmpMarkTile == PFMARK::NONE) {
+        continue;
+      }
+
+      RTSTexture& refMark = m_TileMark[tmpMarkTile];
+
+      int32 x = tmpX + (TILESIZE_X >> 1);
+      int32 y = tmpY + (TILESIZE_Y >> 1) - refMark.getHeight();
+      refMark.setPosition(x, y);
+
+      refMark.draw();
+
+    }
+  }
+
 }
 
 RTSTiledMap::MapTile::MapTile() {

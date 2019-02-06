@@ -32,9 +32,9 @@ void
 mainMenu(RTSApplication* pApp);
 
 //Terrain Modifier
-int g_iTerrainSelected = 0;
-int g_iStartSelection = 0;
-int g_iPathFinders = 0;
+int32 g_iTerrainSelected = 0;
+int32 g_iStartSelection = 0;
+int32 g_iPathFinders = 0;
 
 RTSApplication::RTSApplication()
   : m_window(nullptr),
