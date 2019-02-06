@@ -376,17 +376,22 @@ RTSTiledMap::render() {
 RTSTiledMap::MapTile::MapTile() {
   m_idType = 1;
   m_cost = 1;
+  m_visited = false;
   m_pfMark = PFMARK::NONE;
 }
 
 RTSTiledMap::MapTile::MapTile(const int8 idType, const int8 cost) {
   m_idType = idType;
   m_cost = cost;
+  m_visited = false;
+  m_pfMark = PFMARK::NONE;
 }
 
 RTSTiledMap::MapTile::MapTile(const MapTile& copy) {
   m_idType = copy.m_idType;
   m_cost = copy.m_cost;
+  m_pfMark = PFMARK::NONE;
+  m_visited = false;
 }
 
 RTSTiledMap::MapTile&

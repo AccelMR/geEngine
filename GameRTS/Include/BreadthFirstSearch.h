@@ -2,13 +2,13 @@
 
 #include "GridWalker.h"
 
-class DepthFirstSearch:
+class BreadthFirstSearch:
   public GridWalker
 {
 public:
-  DepthFirstSearch();
-  DepthFirstSearch(RTSTiledMap* pMap);
-  ~DepthFirstSearch();
+  BreadthFirstSearch();
+  BreadthFirstSearch(RTSTiledMap* pMap);
+  ~BreadthFirstSearch();
 
 
   bool Init() override;
@@ -32,8 +32,9 @@ public:
   bool heuristicsSupported() { return false; };
 
 private:
-  std::queue<RTSTiledMap*> m_open;
-  RTSTiledMap *m_start, *m_end, *m_use;
+  std::queue<Vector2I*> m_open;
+  Vector2I m_use, m_start, m_end;
+  /*RTSTiledMap *m_start, *m_end, *m_use;*/
   RTSTiledMap *m_nodeGrid; //Same size as map grid
 
 protected:
