@@ -161,7 +161,8 @@ void BreadthFirstSearch::Reset()
 
 void BreadthFirstSearch::visitGridNode(int32 x, int32 y)
 {
-  if (m_nodeGrid->getVisited(x, y)) {
+  if (m_nodeGrid->getVisited(x, y) ||
+      m_nodeGrid->getType(x,y) == TERRAIN_TYPE::kObstacle) {
     return;
   }
 
