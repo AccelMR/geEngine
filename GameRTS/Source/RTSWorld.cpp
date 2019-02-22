@@ -2,6 +2,10 @@
 #include "RTSTiledMap.h"
 
 #include "RTSUnitType.h"
+#include "BestFirstSearch.h"
+#include "DepthFirstSearch.h"
+#include "BreadthFirstSearch.h"
+#include "GridWalker.h"
 
 RTSWorld::RTSWorld() {
   m_pTiledMap = nullptr;
@@ -22,20 +26,28 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   //Initialize the map (right now it's an empty map)
   m_pTiledMap = ge_new<RTSTiledMap>();
   GE_ASSERT(m_pTiledMap);
-  m_pTiledMap->init(m_pTarget, Vector2I(256, 256));
+  m_pTiledMap->init(m_pTarget, Vector2I(512, 512));
 
   //Create the path finding classes and push them to the walker list
-  //m_walkersList.push_back(ge_new<RTSBreadthFirstSearchMapGridWalker>(m_pTiledMap));
+  GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
+  gw1->setStartPosition(0, 0);
+  gw1->setEndPosition(0, 0);
+
+  GridWalker* gw2 = new BreadthFirstSearch(m_pTiledMap);
+  gw2->setStartPosition(0, 0);
+  gw2->setEndPosition(0, 0);
+
+  m_walkersList.push_back(gw1);
+  m_walkersList.push_back(gw2);
 
   //Init the walker objects
-/*
   for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
-    m_walkersList[it]->init();
+    m_walkersList[it]->Init();
   }
 
   //Set the first walker as the active walker
   setCurrentWalker(m_walkersList.size() > 0 ? 0 : -1);
-*/
+
 
   RTSGame::RTSUnitType unitTypes;
   unitTypes.loadAnimationData(m_pTarget, 1);
@@ -61,11 +73,13 @@ RTSWorld::destroy() {
 void
 RTSWorld::update(float deltaTime) {
   m_pTiledMap->update(deltaTime);
+  m_activeWalker->Update();
 }
 
 void
 RTSWorld::render() {
   m_pTiledMap->render();
+  m_activeWalker->Render();
 }
 
 void
@@ -88,4 +102,29 @@ RTSWorld::setCurrentWalker(const int8 index) {
 
   m_activeWalker = m_walkersList[index];
   m_activeWalkerIndex = index;
+}
+
+void RTSWorld::ResetWalker()
+{
+  m_activeWalker->Reset();
+}
+
+void 
+RTSWorld::SetStartPos(const int32 x, const int32 y)
+{
+  //Init the walker objects
+  for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
+    m_walkersList[it]->setStartPosition(x, y);
+  }
+  /*m_activeWalker->setStartPosition(x, y);*/
+}
+
+void 
+RTSWorld::SetEndPos(const int32 x, const int32 y)
+{
+  //Init the walker objects
+  for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
+    m_walkersList[it]->setEndPosition(x, y);
+  }
+  /*m_activeWalker->setEndPosition(x, y);*/
 }

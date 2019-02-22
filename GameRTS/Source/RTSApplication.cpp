@@ -198,6 +198,15 @@ RTSApplication::updateFrame() {
       !ImGui::IsAnyItemHovered()) {
    
     map->setMark(tileX, tileY, g_iStartSelection);
+    
+    if (g_iStartSelection == PFMARK::START)
+    {
+      m_gameWorld.SetStartPos(tileX, tileY);
+    }
+    if (g_iStartSelection == PFMARK::END)
+    {
+      m_gameWorld.SetEndPos(tileX, tileY);
+    }
   }
 
   if (0 == mousePosition.x ||
@@ -371,8 +380,8 @@ mainMenu(RTSApplication* pApp) {
 
       for (SIZE_T i = 0; i < TERRAIN_TYPE::kNumObjects; i++) {
         ImGui::RadioButton(TERRAIN_TYPE::ES[i].c_str(),
-          &g_iTerrainSelected,
-          static_cast<TERRAIN_TYPE::E> (i));
+                           &g_iTerrainSelected,
+                           static_cast<TERRAIN_TYPE::E> (i));
       }
 
       ImGui::SliderInt("Brush Size", &GameOptions::s_SizeOfBrush, 1, 10);
@@ -397,14 +406,19 @@ mainMenu(RTSApplication* pApp) {
       ImGui::Text("Path Finder");
       ImGui::Spacing(3);
 
-      for (SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++) {
+      for (SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++) 
+      {
         ImGui::RadioButton(TYPE_PATH_FINDER::ES[i].c_str(),
-          &g_iPathFinders,
-          static_cast<TYPE_PATH_FINDER::E> (i));
+                           &g_iPathFinders,
+                           static_cast<TYPE_PATH_FINDER::E> (i));
       }
 
       ImGui::Spacing(5);
-      ImGui::Button("Start", { 200, 50 });
+      if (ImGui::Button("Start", { 200, 50 }))
+      {
+        pApp->getWorld()->setCurrentWalker(g_iPathFinders);
+        pApp->getWorld()->ResetWalker();
+      }
 
     }
     ImGui::End();

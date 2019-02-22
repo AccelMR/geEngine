@@ -68,4 +68,7 @@ class RTSApplication
    float m_fpsTimer;
    float m_fpsCounter;
    float m_framesPerSecond;
+
+   void
+   StartSerch();
 };

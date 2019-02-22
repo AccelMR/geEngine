@@ -20,7 +20,8 @@ RTSTiledMap::RTSTiledMap(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
   init(pTarget, mapSize);
 }
 
-RTSTiledMap::RTSTiledMap(const Vector2I & mapSize)
+RTSTiledMap::RTSTiledMap(const Vector2I & mapSize):
+  m_mapSize(mapSize)
 {
   m_mapGrid.resize(mapSize.x * mapSize.y);
   

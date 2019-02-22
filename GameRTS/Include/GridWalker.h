@@ -65,6 +65,9 @@ protected:
   /* Declaración de variables miembro de la clase                                 										*/
   /************************************************************************************************************************/
 protected:
+
+  WALKSTATE::E m_currentState;
+
   RTSTiledMap *m_pTiledMap;									//Puntero al mapa que estamos usando para calcular
   Vector2I m_StartPos, m_EndPos;
 

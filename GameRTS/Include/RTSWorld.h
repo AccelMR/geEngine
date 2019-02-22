@@ -8,7 +8,7 @@
 using namespace geEngineSDK;
 
 class RTSTiledMap;
-class RTSMapGridWalker;
+class GridWalker;
 
 class RTSWorld
 {
@@ -40,15 +40,23 @@ class RTSWorld
   void
   setCurrentWalker(const int8 index);
 
+  void
+  ResetWalker();
+
+  void
+  SetStartPos(const int32 x, const int32 y);
+
+  void
+  SetEndPos(const int32 x, const int32 y);
+
  private:
   RTSTiledMap* m_pTiledMap;
   //List<RTSUnitType*> m_lstUnitTypes;
   //List<RTSUnit*> m_lstUnits;
   
-  //Vector<RTSMapGridWalker*> m_walkersList;
-  Vector<void*> m_walkersList;
-  //RTSMapGridWalker* m_activeWalker;
-  void* m_activeWalker;
+  Vector<GridWalker*> m_walkersList;
+/*  Vector<void*> m_walkersList;*/
+  GridWalker* m_activeWalker;
   int8 m_activeWalkerIndex;
 
   sf::RenderTarget* m_pTarget;

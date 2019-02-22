@@ -102,7 +102,7 @@ class RTSTiledMap
     uint8 m_idType;
     int8 m_cost;
     uint8 m_pfMark;
-    bool m_visited;
+    bool m_visited; 
   };
 
  public:

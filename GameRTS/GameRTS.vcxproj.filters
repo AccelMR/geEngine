@@ -50,7 +50,13 @@
     <ClCompile Include="Source\GridWalker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\BreadthFirstSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\DepthFirstSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BestFirstSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -82,7 +88,13 @@
     <ClInclude Include="Include\GridWalker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\BreadthFirstSearch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Include\DepthFirstSearch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\BestFirstSearch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
