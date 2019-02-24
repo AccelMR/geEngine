@@ -54,7 +54,7 @@ WALKSTATE::E BreadthFirstSearch::Update()
       m_use = m_open.front();
       m_open.pop_front();
       m_nodeGrid->setVisited(m_use.x, m_use.y, true);
-
+      m_close.push_back(m_use);
 
       if (m_use == m_end)
       {
@@ -67,14 +67,12 @@ WALKSTATE::E BreadthFirstSearch::Update()
       }
 
       int32 x, y;
-
       x = m_use.x + 1;
       y = m_use.y;
       if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
       {
         visitGridNode(x, y);
       }
-
 
       x = m_use.x + 1;
       y = m_use.y + 1;
@@ -91,14 +89,12 @@ WALKSTATE::E BreadthFirstSearch::Update()
         visitGridNode(x, y);
       }
 
-
       x = m_use.x - 1;
       y = m_use.y + 1;
       if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
       {
         visitGridNode(x, y);
       }
-
 
       x = m_use.x - 1;
       y = m_use.y;
@@ -107,14 +103,12 @@ WALKSTATE::E BreadthFirstSearch::Update()
         visitGridNode(x, y);
       }
 
-
       x = m_use.x - 1;
       y = m_use.y - 1;
       if (m_use.x > 0 && m_use.y > 0)
       {
         visitGridNode(x, y);
       }
-
 
       x = m_use.x;
       y = m_use.y - 1;
@@ -145,10 +139,7 @@ void BreadthFirstSearch::Render()
 
 void BreadthFirstSearch::Reset()
 {
-  while (m_open.size() > 0)
-  {
-    m_open.pop_front();
-  }
+  m_open.clear();
 
   m_use = Vector2I::ZERO;
 
@@ -167,6 +158,7 @@ void BreadthFirstSearch::Reset()
 //       m_nodeGrid->setMark(i, j, PFMARK::NONE);
 //     }
 //   }
+
   for (std::list<Vector2I>::iterator it = m_close.begin(); it != m_close.end(); ++it)
   {
     m_nodeGrid->setVisited(it->x, it->y, false);
@@ -177,6 +169,7 @@ void BreadthFirstSearch::Reset()
     }
     m_nodeGrid->setMark(it->x, it->y, PFMARK::NONE);
   }
+  m_close.clear();
 
   int x, y;
   getStartPosition(x, y);

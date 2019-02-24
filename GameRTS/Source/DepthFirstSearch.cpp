@@ -149,14 +149,13 @@ void DepthFirstSearch::Reset()
   {
     m_nodeGrid->setVisited(it->x, it->y, false);
     if (m_nodeGrid->getMark(it->x, it->y) == PFMARK::START ||
-        m_nodeGrid->getMark(it->x, it->y) == PFMARK::END)
+      m_nodeGrid->getMark(it->x, it->y) == PFMARK::END)
     {
       continue;
     }
     m_nodeGrid->setMark(it->x, it->y, PFMARK::NONE);
   }
-    
-
+  m_close.clear();
 
   int x, y;
   getStartPosition(x, y);
