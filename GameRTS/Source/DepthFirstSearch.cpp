@@ -1,5 +1,7 @@
 #include "..\Include\DepthFirstSearch.h"
 
+#include <iostream>
+
 DepthFirstSearch::DepthFirstSearch()
 {
 }
@@ -30,101 +32,100 @@ void DepthFirstSearch::Destroy()
 //   m_nodeGrid = nullptr;
 }
 
-WALKSTATE::E DepthFirstSearch::Update()
+WALKSTATE::E 
+DepthFirstSearch::Update()
 {
-  if (m_currentState != WALKSTATE::REACHEDGOAL||
-      m_currentState == WALKSTATE::UNABLETOREACHGOAL)
+  if (m_open.size() > 0)
   {
-    if (m_open.size() > 0)
+    m_use = m_open.top();
+    m_open.pop();
+    m_nodeGrid->setVisited(m_use.x, m_use.y, true);
+
+    if (m_use == m_start)
     {
-      m_use = m_open.top();
-      m_open.pop();
-      m_nodeGrid->setVisited(m_use.x, m_use.y, true);
-
-      if (m_use == m_start)
-      {
-        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::START);
-      }
-      else
-      {
-        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
-      }
-
-
-      if (m_use == m_end)
-      {
-        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::END);
-        m_currentState = WALKSTATE::REACHEDGOAL;
-        return m_currentState;
-      }
-
-      int32 x, y;
-
-      x = m_use.x + 1;
-      y = m_use.y;
-      if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
-      {
-        visitGridNode(x, y);
-      }
-
-
-      x = m_use.x + 1;
-      y = m_use.y + 1;
-      if (m_use.x < (m_pTiledMap->getMapSize().x - 1) && m_use.y < (m_pTiledMap->getMapSize().y - 1))
-      {
-        visitGridNode(x, y);
-      }
-
-      x = m_use.x;
-      y = m_use.y + 1;
-      if (m_use.y < (m_pTiledMap->getMapSize().y - 1))
-      {
-        visitGridNode(x, y);
-      }
-
-
-      x = m_use.x - 1;
-      y = m_use.y + 1;
-      if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
-      {
-        visitGridNode(x, y);
-      }
-
-
-      x = m_use.x - 1;
-      y = m_use.y;
-      if (m_use.x > 0)
-      {
-        visitGridNode(x, y);
-      }
-
-
-      x = m_use.x - 1;
-      y = m_use.y - 1;
-      if (m_use.x > 0 && m_use.y > 0)
-      {
-        visitGridNode(x, y);
-      }
-
-
-      x = m_use.x;
-      y = m_use.y - 1;
-      if (m_use.y > 0)
-      {
-        visitGridNode(x, y);
-      }
-
-      x = m_use.x + 1;
-      y = m_use.y - 1;
-      if (m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
-      {
-        visitGridNode(x, y);
-      }
-
-      m_currentState = WALKSTATE::STILLLOOKING;
+      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::START);
     }
-    m_currentState = WALKSTATE::UNABLETOREACHGOAL;
+    else
+    {
+      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
+    }
+
+    if (m_use == m_end)
+    {
+      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::END);
+      m_currentState = WALKSTATE::REACHEDGOAL;
+      return m_currentState;
+    }
+
+
+    int32 x, y;
+
+    x = m_use.x + 1;
+    y = m_use.y;
+    if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
+    {
+      visitGridNode(x, y);
+    }
+
+
+    x = m_use.x + 1;
+    y = m_use.y + 1;
+    if (m_use.x < (m_pTiledMap->getMapSize().x - 1) && m_use.y < (m_pTiledMap->getMapSize().y - 1))
+    {
+      visitGridNode(x, y);
+    }
+
+    x = m_use.x;
+    y = m_use.y + 1;
+    if (m_use.y < (m_pTiledMap->getMapSize().y - 1))
+    {
+      visitGridNode(x, y);
+    }
+
+
+    x = m_use.x - 1;
+    y = m_use.y + 1;
+    if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
+    {
+      visitGridNode(x, y);
+    }
+
+
+    x = m_use.x - 1;
+    y = m_use.y;
+    if (m_use.x > 0)
+    {
+      visitGridNode(x, y);
+    }
+
+
+    x = m_use.x - 1;
+    y = m_use.y - 1;
+    if (m_use.x > 0 && m_use.y > 0)
+    {
+      visitGridNode(x, y);
+    }
+
+
+    x = m_use.x;
+    y = m_use.y - 1;
+    if (m_use.y > 0)
+    {
+      visitGridNode(x, y);
+    }
+
+    x = m_use.x + 1;
+    y = m_use.y - 1;
+    if (m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
+    {
+      visitGridNode(x, y);
+    }
+
+    m_currentState = WALKSTATE::STILLLOOKING;
+    return m_currentState;
   }
+  m_currentState = WALKSTATE::UNABLETOREACHGOAL;
+  return m_currentState;
 }
 
 void DepthFirstSearch::Render()
@@ -151,7 +152,6 @@ void DepthFirstSearch::Reset()
       {
         continue;
       }
-
       m_nodeGrid->setMark(i, j, PFMARK::NONE);
     }
   }
@@ -171,10 +171,12 @@ void DepthFirstSearch::Reset()
 void DepthFirstSearch::visitGridNode(int32 x, int32 y)
 {
   if (m_nodeGrid->getVisited(x, y) ||
-    m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle) {
+      m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle) 
+  {
     return;
   }
-
   Vector2I v(x, y);
   m_open.push(v);
+
+  std::cout << x << " " << y << std::endl;
 }

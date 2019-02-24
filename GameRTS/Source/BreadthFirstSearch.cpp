@@ -1,5 +1,7 @@
 #include "..\Include\BreadthFirstSearch.h"
 
+#include <iostream>
+
 /*
 */
 BreadthFirstSearch::BreadthFirstSearch():
@@ -29,7 +31,7 @@ bool BreadthFirstSearch::Init()
   if (m_nodeGrid) { 
     Destroy();
   }
-  m_nodeGrid =  m_pTiledMap/*new RTSTiledMap(m_pTiledMap->getMapSize())*/;
+  m_nodeGrid =  m_pTiledMap;
   return false;
 
 }
@@ -53,20 +55,13 @@ WALKSTATE::E BreadthFirstSearch::Update()
       m_open.pop_front();
       m_nodeGrid->setVisited(m_use.x, m_use.y, true);
 
-      if (m_use == m_start)
-      {
-        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::START);
-      }
-      else
+      if (m_use != m_start)
       {
         m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
       }
 
-
-
       if (m_use == m_end)
       {
-        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::END);
         m_currentState = WALKSTATE::REACHEDGOAL;
         return m_currentState;
       }
@@ -159,8 +154,10 @@ void BreadthFirstSearch::Reset()
 
   for (int32 i = 0; i < m_pTiledMap->getMapSize().x; i++)
   {
-    for (int j = 0; j < m_pTiledMap->getMapSize().y; j++)
+    for (int32 j = 0; j < m_pTiledMap->getMapSize().y; j++)
     {
+      m_nodeGrid->setVisited(i, j, false);
+
       if (m_nodeGrid->getMark(i, j) == PFMARK::START ||
           m_nodeGrid->getMark(i, j) == PFMARK::END)
       {
@@ -168,7 +165,6 @@ void BreadthFirstSearch::Reset()
       }
 
       m_nodeGrid->setMark(i, j, PFMARK::NONE);
-      m_nodeGrid->setVisited(i, j, false);
     }
   }
 

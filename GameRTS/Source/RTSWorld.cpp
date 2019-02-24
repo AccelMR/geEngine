@@ -73,7 +73,10 @@ RTSWorld::destroy() {
 void
 RTSWorld::update(float deltaTime) {
   m_pTiledMap->update(deltaTime);
-  m_activeWalker->Update();
+  if (m_activeWalker->GetState() == WALKSTATE::STILLLOOKING) 
+  {
+    m_activeWalker->Update();
+  }
 }
 
 void

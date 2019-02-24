@@ -62,9 +62,19 @@ RTSTiledMap::init(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
   }
 
   //Arrows and flags loader
-  for (uint32 i = 1; i < PFMARK::NUMOBJ; ++i) {
+  for (uint32 i = 1; i < PFMARK::NUMOBJ; ++i) 
+  {
     textureName = "Textures/Terrain/mark_" + toString(i) + ".png";
     m_TileMark[i].loadFromFile(m_pTarget, textureName);
+
+    if (i == 1 || i == 10)
+    {
+      continue;
+    }
+    m_TileMark[i].setOrigin(m_TileMark[i].getWidth() / 2.0f, m_TileMark[i].getHeight() / 2.0f);
+    m_TileMark[i].setRotation(Degree(45));
+    m_TileMark[i].setScale(1, 0.5f);
+
   }
 
   preCalc();
@@ -96,7 +106,7 @@ RTSTiledMap::setCost(const int32 x, const int32 y, const int8 cost) {
 }
 
 void 
-RTSTiledMap::setMark(const uint8 x, const uint8 y, const uint8 mark){
+RTSTiledMap::setMark(const int32 x, const int32 y, const uint8 mark){
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   if (mark == PFMARK::START)
   {
@@ -120,14 +130,14 @@ RTSTiledMap::setMark(const uint8 x, const uint8 y, const uint8 mark){
 }
 
 void 
-RTSTiledMap::setVisited(const uint8 x, const uint8 y, const bool visited)
+RTSTiledMap::setVisited(const uint32 x, const uint32 y, const bool visited)
 {
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   m_mapGrid[(y*m_mapSize.x) + x].setVisited(visited);
 }
 
 bool 
-RTSTiledMap::getVisited(const uint8 x, const uint8 y)
+RTSTiledMap::getVisited(const uint32 x, const uint32 y)
 {
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   return m_mapGrid[(y*m_mapSize.x) + x].getVisited();
@@ -363,12 +373,20 @@ RTSTiledMap::render() {
 
       RTSTexture& refMark = m_TileMark[tmpMarkTile];
 
-      int32 x = tmpX + (TILESIZE_X >> 1);
-      int32 y = tmpY + (TILESIZE_Y >> 1) - refMark.getHeight();
-      refMark.setPosition(x, y);
-
-      refMark.draw();
-
+      if (tmpMarkTile == PFMARK::END || tmpMarkTile == PFMARK::START)
+      {
+        int32 y = tmpY + (TILESIZE_Y >> 1) - refMark.getHeight();
+        int32 x = tmpX + (TILESIZE_X >> 1);
+        refMark.setPosition(x, y);
+        refMark.draw();
+      }
+      else
+      {
+        int32 y = tmpY + (TILESIZE_Y >> 1) /*- refMark.getHeight()*/;
+        int32 x = tmpX + (TILESIZE_X >> 1);
+        refMark.setPosition(x, y);
+        refMark.draw();
+      }
     }
   }
 

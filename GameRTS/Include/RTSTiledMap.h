@@ -142,13 +142,13 @@ class RTSTiledMap
   setCost(const int32 x, const int32 y, const int8 cost);
 
   void
-  setMark(const uint8 x, const uint8 y, const uint8 mark);
+  setMark(const int32 x, const int32 y, const uint8 mark);
 
   void
-  setVisited(const uint8 x, const uint8 y, const bool visited);
+  setVisited(const uint32 x, const uint32 y, const bool visited);
 
   bool
-  getVisited(const uint8 x, const uint8 y);
+  getVisited(const uint32 x, const uint32 y);
 
   uint8
   getMark(const int32 x, const int32 y) const;

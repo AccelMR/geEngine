@@ -58,6 +58,8 @@ public:
   void getStartPosition(int32 & x, int32 & y) { x = m_StartPos.x; y = m_StartPos.y; }				//Función de ayuda para obtener el punto inicial de búsqueda
   void getEndPosition(int32 & x, int32 & y) { x = m_EndPos.x; y = m_EndPos.y; }						//Función de ayuda para obtener el punto final de búsqueda
 
+  WALKSTATE::E GetState() { return m_currentState; }
+
 protected:
   virtual void visitGridNode(int32 x, int32 y) = 0;					//Marca un nodo de mapa como visitado (esto lo procesa según el algoritmo utilizado)
 
