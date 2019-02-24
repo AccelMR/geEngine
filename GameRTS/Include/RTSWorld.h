@@ -53,6 +53,9 @@ class RTSWorld
   RTSTiledMap* m_pTiledMap;
   //List<RTSUnitType*> m_lstUnitTypes;
   //List<RTSUnit*> m_lstUnits;
+
+  Vector<Vector2I> m_path;
+  sf::VertexArray m_drawPath;
   
   Vector<GridWalker*> m_walkersList;
 /*  Vector<void*> m_walkersList;*/

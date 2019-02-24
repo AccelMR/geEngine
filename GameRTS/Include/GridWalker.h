@@ -60,16 +60,33 @@ public:
 
   WALKSTATE::E GetState() { return m_currentState; }
 
+  Vector<Vector2I> BackTracing();
+
 protected:
   virtual void visitGridNode(int32 x, int32 y) = 0;					//Marca un nodo de mapa como visitado (esto lo procesa según el algoritmo utilizado)
+
+  void ClearClose();
 
   /************************************************************************************************************************/
   /* Declaración de variables miembro de la clase                                 										*/
   /************************************************************************************************************************/
 protected:
 
+  struct CloseList
+  {
+    Vector2I position;
+    Vector2I parent;
+  };
+  struct OpenList
+  {
+    Vector2I position;
+    Vector2I parent;
+  };
+
+  
+
+  List<CloseList> m_close;
   WALKSTATE::E m_currentState;
-  std::list<Vector2I> m_close;
   RTSTiledMap *m_pTiledMap;									//Puntero al mapa que estamos usando para calcular
   Vector2I m_StartPos, m_EndPos;
 

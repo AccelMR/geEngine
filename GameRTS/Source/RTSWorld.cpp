@@ -5,6 +5,7 @@
 #include "BestFirstSearch.h"
 #include "DepthFirstSearch.h"
 #include "BreadthFirstSearch.h"
+#include "Djistra.h"
 #include "GridWalker.h"
 
 RTSWorld::RTSWorld() {
@@ -26,7 +27,7 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   //Initialize the map (right now it's an empty map)
   m_pTiledMap = ge_new<RTSTiledMap>();
   GE_ASSERT(m_pTiledMap);
-  m_pTiledMap->init(m_pTarget, Vector2I(256, 256));
+  m_pTiledMap->init(m_pTarget, Vector2I(4096, 4096));
 
   //Create the path finding classes and push them to the walker list
   GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
@@ -78,10 +79,33 @@ RTSWorld::destroy() {
 void
 RTSWorld::update(float deltaTime) {
   m_pTiledMap->update(deltaTime);
+
   if (m_activeWalker->GetState() == WALKSTATE::STILLLOOKING) 
   {
     m_activeWalker->Update();
   }
+
+  else if (m_activeWalker->GetState() == WALKSTATE::REACHEDGOAL)
+  {
+    if (m_path.empty())
+    {
+      m_path = m_activeWalker->BackTracing();
+      m_activeWalker->Reset();
+      m_drawPath.resize(m_path.size());
+      m_drawPath.setPrimitiveType(sf::LineStrip);
+    }
+
+    int32  x, y, i = 0;
+    for (Vector<Vector2I>::iterator it = m_path.end() - 1; it != m_path.begin(); --it)
+    {
+      m_pTiledMap->getMapToScreenCoords(it->x, it->y, x, y);
+      sf::Vertex v(sf::Vector2f(x, y), sf::Color::Black);
+      m_drawPath[i++] = v;
+    }
+
+    m_pTarget->draw(m_drawPath);
+  }
+
 }
 
 void

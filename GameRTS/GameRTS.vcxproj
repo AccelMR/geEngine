@@ -171,6 +171,7 @@
     <ClCompile Include="C:\Development\imgui-1.60\imgui.cpp" />
     <ClCompile Include="C:\Development\imgui-1.60\imgui_demo.cpp" />
     <ClCompile Include="C:\Development\imgui-1.60\imgui_draw.cpp" />
+    <ClCompile Include="Include\Djistra.cpp" />
     <ClCompile Include="Source\BestFirstSearch.cpp" />
     <ClCompile Include="Source\BreadthFirstSearch.cpp" />
     <ClCompile Include="Source\DepthFirstSearch.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Include\BestFirstSearch.h" />
     <ClInclude Include="Include\BreadthFirstSearch.h" />
     <ClInclude Include="Include\DepthFirstSearch.h" />
+    <ClInclude Include="Include\Djistra.h" />
     <ClInclude Include="Include\RTSApplication.h" />
     <ClInclude Include="Include\RTSConfig.h" />
     <ClInclude Include="Include\GridWalker.h" />

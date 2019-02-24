@@ -59,6 +59,9 @@
     <ClCompile Include="Source\BestFirstSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Include\Djistra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\RTSUnitType.h">
@@ -97,5 +100,6 @@
     <ClInclude Include="Include\BestFirstSearch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Djistra.h" />
   </ItemGroup>
 </Project>

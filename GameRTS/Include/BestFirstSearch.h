@@ -31,8 +31,10 @@ public:
   bool heuristicsSupported() { return true; }
 
 private:
-  List<Vector2I> m_open;
-  List<Vector2I> m_close;
+
+
+
+  List<OpenList> m_open;
 
   Vector2I m_use, m_start, m_end;
   /*RTSTiledMap *m_start, *m_end, *m_use;*/

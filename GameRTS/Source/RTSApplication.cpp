@@ -184,8 +184,10 @@ RTSApplication::updateFrame() {
       !ImGui::IsAnyItemHovered()) {
 
     for (SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++) {
-      for (SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++) {
+      for (SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++) 
+      {
         map->setType(tileX + i, tileY + j, g_iTerrainSelected);
+        map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
       }
     }
   }

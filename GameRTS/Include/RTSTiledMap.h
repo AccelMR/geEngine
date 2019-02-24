@@ -28,6 +28,8 @@ namespace TERRAIN_TYPE {
     "Marsh",
     "Obstacle",
   };
+
+  static Vector<int8> Cost = { 10, 1, 15, 120 };
 }
 
  enum PFMARK
