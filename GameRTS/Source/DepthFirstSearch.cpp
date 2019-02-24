@@ -29,7 +29,7 @@ void DepthFirstSearch::Destroy()
 //   if (nullptr != m_nodeGrid) {
 //     delete m_nodeGrid;
 //   }
-//   m_nodeGrid = nullptr;
+   m_nodeGrid = nullptr;
 }
 
 WALKSTATE::E 

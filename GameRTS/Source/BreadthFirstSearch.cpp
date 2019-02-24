@@ -25,7 +25,6 @@ BreadthFirstSearch::~BreadthFirstSearch()
   Destroy();
 }
 
-
 bool BreadthFirstSearch::Init()
 {
   if (m_nodeGrid) { 
@@ -41,7 +40,7 @@ void BreadthFirstSearch::Destroy()
 //   if (nullptr != m_nodeGrid){
 //     delete m_nodeGrid;
 //   }
-//   m_nodeGrid = nullptr;
+   m_nodeGrid = nullptr;
 }
 
 WALKSTATE::E BreadthFirstSearch::Update()
@@ -192,8 +191,7 @@ void BreadthFirstSearch::visitGridNode(int32 x, int32 y)
     return;
   }
 
-  Vector2I v(x, y);
-  
+  Vector2I v(x, y);  
 
   for (int i = 0; i < m_open.size(); ++i)
   {

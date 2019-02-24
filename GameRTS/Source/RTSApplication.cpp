@@ -19,7 +19,6 @@
 #include <commdlg.h>
 #include <imgui.h>
 
-
 #include "RTSConfig.h"
 #include "RTSApplication.h"
 #include "RTSTiledMap.h"
@@ -363,13 +362,19 @@ mainMenu(RTSApplication* pApp) {
     ImGui::Text("Extra Windows");
     ImGui::Separator();
 
-    ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive);
-    ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive);
+    if (ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
+    {
+      GameOptions::s_IsPathMenuActive = false;
+    }
+
+    if (ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
+    {
+      GameOptions::s_IsEditorActive = false;
+    }
   }
   ImGui::End();
 
   if (GameOptions::s_IsEditorActive){
-    GameOptions::s_IsPathMenuActive = false;
 
     // Editor
     ImGui::Begin("Editor");
@@ -391,7 +396,6 @@ mainMenu(RTSApplication* pApp) {
   }
 
   if (GameOptions::s_IsPathMenuActive) {
-    GameOptions::s_IsEditorActive = false;
 
     ImGui::Begin("Path finders");
     {

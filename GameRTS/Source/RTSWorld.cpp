@@ -26,7 +26,7 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   //Initialize the map (right now it's an empty map)
   m_pTiledMap = ge_new<RTSTiledMap>();
   GE_ASSERT(m_pTiledMap);
-  m_pTiledMap->init(m_pTarget, Vector2I(4096, 4096));
+  m_pTiledMap->init(m_pTarget, Vector2I(256, 256));
 
   //Create the path finding classes and push them to the walker list
   GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
@@ -37,8 +37,13 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   gw2->setStartPosition(0, 0);
   gw2->setEndPosition(0, 0);
 
+  GridWalker* gw3 = new BestFirstSearch(m_pTiledMap);
+  gw3->setStartPosition(0, 0);
+  gw3->setEndPosition(0, 0);
+
   m_walkersList.push_back(gw1);
   m_walkersList.push_back(gw2);
+  m_walkersList.push_back(gw3);
 
   //Init the walker objects
   for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
