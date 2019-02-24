@@ -40,33 +40,26 @@ DepthFirstSearch::Update()
     m_use = m_open.top();
     m_open.pop();
     m_nodeGrid->setVisited(m_use.x, m_use.y, true);
-
-    if (m_use == m_start)
-    {
-      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::START);
-    }
-    else
-    {
-      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
-    }
+    m_close.push_back(m_use);
 
     if (m_use == m_end)
     {
-      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::END);
       m_currentState = WALKSTATE::REACHEDGOAL;
       return m_currentState;
     }
 
+    if (m_use != m_start)
+    {
+      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
+    }
 
     int32 x, y;
-
     x = m_use.x + 1;
     y = m_use.y;
     if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
     {
       visitGridNode(x, y);
     }
-
 
     x = m_use.x + 1;
     y = m_use.y + 1;
@@ -82,14 +75,12 @@ DepthFirstSearch::Update()
       visitGridNode(x, y);
     }
 
-
     x = m_use.x - 1;
     y = m_use.y + 1;
     if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
     {
       visitGridNode(x, y);
     }
-
 
     x = m_use.x - 1;
     y = m_use.y;
@@ -98,14 +89,12 @@ DepthFirstSearch::Update()
       visitGridNode(x, y);
     }
 
-
     x = m_use.x - 1;
     y = m_use.y - 1;
     if (m_use.x > 0 && m_use.y > 0)
     {
       visitGridNode(x, y);
     }
-
 
     x = m_use.x;
     y = m_use.y - 1;
@@ -141,20 +130,33 @@ void DepthFirstSearch::Reset()
 
   m_use = Vector2I::ZERO;
 
-  for (int32 i = 0; i < m_pTiledMap->getMapSize().x; i++)
+//   for (int32 i = 0; i < m_pTiledMap->getMapSize().x; i++)
+//   {
+//     for (int32 j = 0; j < m_pTiledMap->getMapSize().y; j++)
+//     {
+//       m_nodeGrid->setVisited(i, j, false);
+//       
+//       if (m_nodeGrid->getMark(i, j) == PFMARK::START ||
+//           m_nodeGrid->getMark(i, j) == PFMARK::END)
+//       {
+//         continue;
+//       }
+//       m_nodeGrid->setMark(i, j, PFMARK::NONE);
+//     }
+//   }
+  
+  for (std::list<Vector2I>::iterator it = m_close.begin(); it != m_close.end(); ++it)
   {
-    for (int32 j = 0; j < m_pTiledMap->getMapSize().y; j++)
+    m_nodeGrid->setVisited(it->x, it->y, false);
+    if (m_nodeGrid->getMark(it->x, it->y) == PFMARK::START ||
+        m_nodeGrid->getMark(it->x, it->y) == PFMARK::END)
     {
-      m_nodeGrid->setVisited(i, j, false);
-      
-      if (m_nodeGrid->getMark(i, j) == PFMARK::START ||
-          m_nodeGrid->getMark(i, j) == PFMARK::END)
-      {
-        continue;
-      }
-      m_nodeGrid->setMark(i, j, PFMARK::NONE);
+      continue;
     }
+    m_nodeGrid->setMark(it->x, it->y, PFMARK::NONE);
   }
+    
+
 
   int x, y;
   getStartPosition(x, y);
@@ -177,6 +179,4 @@ void DepthFirstSearch::visitGridNode(int32 x, int32 y)
   }
   Vector2I v(x, y);
   m_open.push(v);
-
-  std::cout << x << " " << y << std::endl;
 }

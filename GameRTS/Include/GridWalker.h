@@ -69,7 +69,7 @@ protected:
 protected:
 
   WALKSTATE::E m_currentState;
-
+  std::list<Vector2I> m_close;
   RTSTiledMap *m_pTiledMap;									//Puntero al mapa que estamos usando para calcular
   Vector2I m_StartPos, m_EndPos;
 
