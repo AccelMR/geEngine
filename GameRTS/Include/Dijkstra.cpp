@@ -1,4 +1,4 @@
-#include "..\Include\Djistra.h"
+#include "..\Include\Dijkstra.h"
 
 #include <iostream>
 
@@ -9,6 +9,13 @@ Dijkstra::Dijkstra() :
 {
   m_StartPos = Vector2I::ZERO;
   m_EndPos = Vector2I::ZERO;
+}
+
+Dijkstra::Dijkstra(RTSTiledMap * pMap, sf::RenderTarget* window) :
+  GridWalker(pMap),
+  m_nodeGrid(nullptr),
+  m_render(window)
+{
 }
 
 /*
@@ -23,6 +30,11 @@ Dijkstra::Dijkstra(RTSTiledMap* pMap) :
 Dijkstra::~Dijkstra()
 {
   Destroy();
+  if (nullptr != m_arialFont)
+  {
+    delete m_arialFont;
+    m_arialFont = nullptr;
+  }
 }
 
 bool Dijkstra::Init()
@@ -31,6 +43,16 @@ bool Dijkstra::Init()
     Destroy();
   }
   m_nodeGrid = m_pTiledMap;
+
+  m_arialFont = ge_new<sf::Font>();
+  if (nullptr == m_arialFont) {
+    GE_EXCEPT(InvalidStateException, "Couldn't create a Font");
+  }
+
+
+  if (!m_arialFont->loadFromFile("Fonts/arial.ttf")) {
+    GE_EXCEPT(FileNotFoundException, "Arial font not found");
+  }
   return false;
 
 }
@@ -131,7 +153,21 @@ WALKSTATE::E Dijkstra::Update()
 }
 
 void Dijkstra::Render()
-{//TODO: Render
+{
+     sf::Text text;
+     int32 x, y= 0;
+
+     text.setCharacterSize(12);
+     text.setFillColor(sf::Color::Black);
+     text.setFont(*m_arialFont);
+     
+     for (int32 i = 0; i < m_closeD.size(); ++i)
+     {
+        m_pTiledMap->getMapToScreenCoords(m_closeD[i].position.x, m_closeD[i].position.y, x, y);
+        text.setPosition(x, y);
+        text.setString(toString(m_closeD[i].weight).c_str());
+        /*m_render->draw(text);*/
+     }
 }
 
 void Dijkstra::Reset()
@@ -177,27 +213,17 @@ void Dijkstra::visitGridNode(int32 x, int32 y)
   }
 
   Vector2I v(x, y);
-
-  for (std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
-  {
-    if (it->position == v)
-    {
-      return;
-    }
-  }
-
   PriorityQueue(v);
 }
 
 void
 Dijkstra::PriorityQueue(Vector2I& v)
 {
-  uint32 weight = m_pTiledMap->getCost(v.x, v.y);
-
+  uint32 weight = m_pTiledMap->getCost(v.x, v.y) + m_closeD.back().weight;
 
   for (std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
-//     for (std::list<NodeListD>::iterator it2 = m_closeD.begin(); it != m_closeD.end(); ++it)
+//     for (Vector<NodeListD>::iterator it2 = m_closeD.begin(); it2 != m_closeD.end(); ++it2)
 //     {
 //       if (it2->position == m_use)
 //       {
@@ -205,14 +231,12 @@ Dijkstra::PriorityQueue(Vector2I& v)
 //         continue;
 //       }
 //     }
-    weight += m_closeD.back().weight;
     if (it->position == v)
     {
       return;
     }
 
-    uint32 otherWeight = it->weight;
-    if (weight < otherWeight)
+    if (weight < it->weight)
     {
       m_open.insert(it, { v, m_use,weight });
       return;

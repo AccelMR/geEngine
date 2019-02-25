@@ -168,7 +168,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Djistra.cpp" />
+    <ClCompile Include="Include\Dijkstra.cpp" />
+    <ClCompile Include="Source\AStar.cpp" />
     <ClCompile Include="Source\BestFirstSearch.cpp" />
     <ClCompile Include="Source\BreadthFirstSearch.cpp" />
     <ClCompile Include="Source\DepthFirstSearch.cpp" />
@@ -187,10 +188,11 @@
     <ClCompile Include="Source\GridWalker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\AStar.h" />
     <ClInclude Include="Include\BestFirstSearch.h" />
     <ClInclude Include="Include\BreadthFirstSearch.h" />
     <ClInclude Include="Include\DepthFirstSearch.h" />
-    <ClInclude Include="Include\Djistra.h" />
+    <ClInclude Include="Include\Dijkstra.h" />
     <ClInclude Include="Include\RTSApplication.h" />
     <ClInclude Include="Include\RTSConfig.h" />
     <ClInclude Include="Include\GridWalker.h" />

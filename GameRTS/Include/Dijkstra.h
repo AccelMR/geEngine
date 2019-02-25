@@ -7,6 +7,7 @@ class Dijkstra :
 {
 public:
   Dijkstra();
+  Dijkstra(RTSTiledMap* pMap, sf::RenderTarget* window);
   Dijkstra(RTSTiledMap* pMap);
   ~Dijkstra();
 
@@ -57,6 +58,9 @@ private:
   Vector2I m_use, m_start, m_end;
   /*RTSTiledMap *m_start, *m_end, *m_use;*/
   RTSTiledMap *m_nodeGrid; //Same size as map grid
+  
+  sf::RenderTarget* m_render;
+  sf::Font* m_arialFont;
 
 protected:
   virtual void visitGridNode(int32 x, int32 y) override;

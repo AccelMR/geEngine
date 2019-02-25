@@ -6,6 +6,7 @@
 #include "DepthFirstSearch.h"
 #include "BreadthFirstSearch.h"
 #include "Dijkstra.h"
+#include "AStar.h"
 #include "GridWalker.h"
 
 RTSWorld::RTSWorld() {
@@ -31,29 +32,22 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 
   //Create the path finding classes and push them to the walker list
   GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
-  gw1->setStartPosition(0, 0);
-  gw1->setEndPosition(0, 0);
-
   GridWalker* gw2 = new BreadthFirstSearch(m_pTiledMap);
-  gw2->setStartPosition(0, 0);
-  gw2->setEndPosition(0, 0);
-
   GridWalker* gw3 = new BestFirstSearch(m_pTiledMap);
-  gw3->setStartPosition(0, 0);
-  gw3->setEndPosition(0, 0);
-
-  GridWalker* gw4 = new Dijkstra(m_pTiledMap);
-  gw3->setStartPosition(0, 0);
-  gw3->setEndPosition(0, 0);
+  GridWalker* gw4 = new Dijkstra(m_pTiledMap, m_pTarget);
+  GridWalker* gw5 = new AStar(m_pTiledMap);
 
   m_walkersList.push_back(gw1);
   m_walkersList.push_back(gw2);
   m_walkersList.push_back(gw3);
   m_walkersList.push_back(gw4);
+  m_walkersList.push_back(gw5);
 
   //Init the walker objects
   for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
     m_walkersList[it]->Init();
+    m_walkersList[it]->setStartPosition(0, 0);
+    m_walkersList[it]->setEndPosition(0, 0);
   }
 
   //Set the first walker as the active walker

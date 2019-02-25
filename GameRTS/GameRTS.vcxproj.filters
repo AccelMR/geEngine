@@ -47,9 +47,6 @@
     <ClCompile Include="Source\BestFirstSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Djistra.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Externals\imgui.cpp">
       <Filter>Source Files\Externals</Filter>
     </ClCompile>
@@ -64,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="Source\Externals\imgui-SFML.cpp">
       <Filter>Source Files\Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Dijkstra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AStar.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +100,9 @@
     <ClInclude Include="Include\BestFirstSearch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Djistra.h" />
+    <ClInclude Include="Include\Dijkstra.h" />
+    <ClInclude Include="Include\AStar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
