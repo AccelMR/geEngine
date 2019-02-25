@@ -165,7 +165,7 @@ void Djistra::visitGridNode(int32 x, int32 y)
 
   Vector2I v(x, y);
 
-  for (std::list<OpenList>::iterator it = m_open.begin(); it != m_open.end(); ++it)
+  for (std::list<NodeList>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
     if (it->position == v)
     {

@@ -42,9 +42,14 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   gw3->setStartPosition(0, 0);
   gw3->setEndPosition(0, 0);
 
+  GridWalker* gw4 = new Djistra(m_pTiledMap);
+  gw3->setStartPosition(0, 0);
+  gw3->setEndPosition(0, 0);
+
   m_walkersList.push_back(gw1);
   m_walkersList.push_back(gw2);
   m_walkersList.push_back(gw3);
+  m_walkersList.push_back(gw4);
 
   //Init the walker objects
   for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
@@ -57,6 +62,8 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 
   RTSGame::RTSUnitType unitTypes;
   unitTypes.loadAnimationData(m_pTarget, 1);
+
+  m_drawPath = sf::VertexArray(sf::LineStrip);
 
   return true;
 }
@@ -74,6 +81,7 @@ RTSWorld::destroy() {
     ge_delete(m_pTiledMap);
     m_pTiledMap = nullptr;
   }
+  m_path.clear();
 }
 
 void
@@ -90,20 +98,16 @@ RTSWorld::update(float deltaTime) {
     if (m_path.empty())
     {
       m_path = m_activeWalker->BackTracing();
-      m_activeWalker->Reset();
       m_drawPath.resize(m_path.size());
-      m_drawPath.setPrimitiveType(sf::LineStrip);
     }
 
-    int32  x, y, i = 0;
-    for (Vector<Vector2I>::iterator it = m_path.end() - 1; it != m_path.begin(); --it)
+    int32  x, y;
+    for (int32 i = 0; i < m_path.size(); ++i)
     {
-      m_pTiledMap->getMapToScreenCoords(it->x, it->y, x, y);
-      sf::Vertex v(sf::Vector2f(x, y), sf::Color::Black);
-      m_drawPath[i++] = v;
+      m_pTiledMap->getMapToScreenCoords(m_path[i].x, m_path[i].y, x, y);
+      sf::Vertex v(sf::Vector2f(x + (TILESIZE_X >> 1), y + (TILESIZE_Y >> 1)), sf::Color::Black);
+      m_drawPath[i] = v;
     }
-
-    m_pTarget->draw(m_drawPath);
   }
 
 }
@@ -112,6 +116,7 @@ void
 RTSWorld::render() {
   m_pTiledMap->render();
   m_activeWalker->Render();
+  m_pTarget->draw(m_drawPath);
 }
 
 void
@@ -142,6 +147,7 @@ void RTSWorld::ResetWalker()
   {
     m_walkersList[it]->Reset();
   }
+  m_path.clear();
 }
 
 void 

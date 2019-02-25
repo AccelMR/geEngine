@@ -71,13 +71,7 @@ protected:
   /* Declaración de variables miembro de la clase                                 										*/
   /************************************************************************************************************************/
 protected:
-
-  struct CloseList
-  {
-    Vector2I position;
-    Vector2I parent;
-  };
-  struct OpenList
+  struct NodeList
   {
     Vector2I position;
     Vector2I parent;
@@ -85,7 +79,7 @@ protected:
 
   
 
-  List<CloseList> m_close;
+  Vector<NodeList> m_close;
   WALKSTATE::E m_currentState;
   RTSTiledMap *m_pTiledMap;									//Puntero al mapa que estamos usando para calcular
   Vector2I m_StartPos, m_EndPos;

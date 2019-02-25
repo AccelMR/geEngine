@@ -140,7 +140,7 @@ BestFirstSearch::PriorityQueue(Vector2I& v)
 {
   uint32 distance = v.manhattanDist(m_end);
 
-  for (std::list<OpenList>::iterator it = m_open.begin(); it != m_open.end(); ++it)
+  for (std::list<NodeList>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
     if (it->position == v)
     {
