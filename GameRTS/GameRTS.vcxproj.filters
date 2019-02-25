@@ -35,18 +35,6 @@
     <ClCompile Include="Source\RTSWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Development\imgui-1.60\imgui.cpp">
-      <Filter>Source Files\Externals</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Development\imgui-1.60\imgui_demo.cpp">
-      <Filter>Source Files\Externals</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Development\imgui-1.60\imgui_draw.cpp">
-      <Filter>Source Files\Externals</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Externals\imgui-SFML.cpp">
-      <Filter>Source Files\Externals</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GridWalker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,6 +49,21 @@
     </ClCompile>
     <ClCompile Include="Include\Djistra.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Externals\imgui.cpp">
+      <Filter>Source Files\Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Externals\imgui_demo.cpp">
+      <Filter>Source Files\Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Externals\imgui_draw.cpp">
+      <Filter>Source Files\Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Externals\imgui_widgets.cpp">
+      <Filter>Source Files\Externals</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Externals\imgui-SFML.cpp">
+      <Filter>Source Files\Externals</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,12 +84,6 @@
     </ClInclude>
     <ClInclude Include="Include\RTSWorld.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Development\imgui-1.60\imgui.h">
-      <Filter>Source Files\Externals</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Development\imgui-1.60\imgui_internal.h">
-      <Filter>Source Files\Externals</Filter>
     </ClInclude>
     <ClInclude Include="Include\GridWalker.h">
       <Filter>Source Files</Filter>

@@ -359,7 +359,7 @@ mainMenu(RTSApplication* pApp) {
 
     ImGui::Checkbox("Show grid", &GameOptions::s_MapShowGrid);
 
-    ImGui::Spacing(5);
+    /*ImGui::Spacing(5);*/
 
     ImGui::Text("Extra Windows");
     ImGui::Separator();
@@ -402,15 +402,15 @@ mainMenu(RTSApplication* pApp) {
     ImGui::Begin("Path finders");
     {
       ImGui::Text("Select Positions");
-      ImGui::Spacing(3);
+     /* ImGui::Spacing(3);*/
 
       ImGui::RadioButton("Start Position", &g_iStartSelection, 1);
       ImGui::RadioButton("End Position", &g_iStartSelection, 10);
-      ImGui::Spacing(4);
+      /*ImGui::Spacing(4);*/
 
       ImGui::Separator();
       ImGui::Text("Path Finder");
-      ImGui::Spacing(3);
+      /*ImGui::Spacing(3);*/
 
       for (SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++) 
       {
@@ -419,7 +419,7 @@ mainMenu(RTSApplication* pApp) {
                            static_cast<TYPE_PATH_FINDER::E> (i));
       }
 
-      ImGui::Spacing(5);
+      /*ImGui::Spacing(5);*/
       if (ImGui::Button("Start", { 200, 50 }))
       {
         pApp->getWorld()->setCurrentWalker(g_iPathFinders);
