@@ -58,6 +58,7 @@ private:
   Vector2I m_use, m_start, m_end;
   /*RTSTiledMap *m_start, *m_end, *m_use;*/
   RTSTiledMap *m_nodeGrid; //Same size as map grid
+  Vector<Vector2I> m_endAdjacent;
   
   sf::RenderTarget* m_render;
   sf::Font* m_arialFont;

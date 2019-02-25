@@ -161,13 +161,13 @@ void Dijkstra::Render()
      text.setFillColor(sf::Color::Black);
      text.setFont(*m_arialFont);
      
-     for (int32 i = 0; i < m_closeD.size(); ++i)
-     {
-        m_pTiledMap->getMapToScreenCoords(m_closeD[i].position.x, m_closeD[i].position.y, x, y);
-        text.setPosition(x, y);
-        text.setString(toString(m_closeD[i].weight).c_str());
-        /*m_render->draw(text);*/
-     }
+//      for (int32 i = 0; i < m_closeD.size(); ++i)
+//      {
+//         m_pTiledMap->getMapToScreenCoords(m_closeD[i].position.x, m_closeD[i].position.y, x, y);
+//         text.setPosition(x, y);
+//         text.setString(toString(m_closeD[i].weight).c_str());
+//         /*m_render->draw(text);*/
+//      }
 }
 
 void Dijkstra::Reset()

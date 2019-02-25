@@ -72,8 +72,8 @@ RTSTiledMap::init(sf::RenderTarget* pTarget, const Vector2I& mapSize) {
       continue;
     }
     m_TileMark[i].setOrigin(m_TileMark[i].getWidth() / 2.0f, m_TileMark[i].getHeight() / 2.0f);
-    m_TileMark[i].setRotation(Degree(45));
-    m_TileMark[i].setScale(1, 0.5f);
+//     m_TileMark[i].setRotation(Degree(45));
+//     m_TileMark[i].setScale(1, 0.5f);
 
   }
 
