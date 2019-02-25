@@ -60,7 +60,7 @@ public:
 
   WALKSTATE::E GetState() { return m_currentState; }
 
-  Vector<Vector2I> BackTracing();
+  virtual Vector<Vector2I> BackTracing();
 
 protected:
   virtual void visitGridNode(int32 x, int32 y) = 0;					//Marca un nodo de mapa como visitado (esto lo procesa según el algoritmo utilizado)
@@ -71,13 +71,12 @@ protected:
   /* Declaración de variables miembro de la clase                                 										*/
   /************************************************************************************************************************/
 protected:
+
   struct NodeList
   {
     Vector2I position;
     Vector2I parent;
-  };
-
-  
+  };  
 
   Vector<NodeList> m_close;
   WALKSTATE::E m_currentState;

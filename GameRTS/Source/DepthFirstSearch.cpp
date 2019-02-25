@@ -37,10 +37,10 @@ DepthFirstSearch::Update()
 {
   if (m_open.size() > 0)
   {
-    m_use = m_open.top().position;
-    m_close.push_back({ m_use, m_open.top().parent });
+    m_use = m_open.back().position;
+    m_close.push_back({ m_use, m_open.back().parent });
 
-    m_open.pop();
+    m_open.pop_back();
     m_nodeGrid->setVisited(m_use.x, m_use.y, true);
 
     if (m_use == m_end)
@@ -125,10 +125,7 @@ void DepthFirstSearch::Render()
 
 void DepthFirstSearch::Reset()
 {
-  while (m_open.size() > 0)
-  {
-    m_open.pop();
-  }
+  m_open.clear();
 
   m_use = Vector2I::ZERO;
   ClearClose();
@@ -141,17 +138,25 @@ void DepthFirstSearch::Reset()
   getEndPosition(x, y);
   m_end = m_EndPos;
 
-  m_open.push({ m_start,m_start });
+  m_open.push_back({ m_start,m_start });
   m_currentState = WALKSTATE::STILLLOOKING;
 }
 
 void DepthFirstSearch::visitGridNode(int32 x, int32 y)
 {
+  Vector2I v(x, y);
   if (m_nodeGrid->getVisited(x, y) ||
       m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle) 
   {
     return;
   }
-  Vector2I v(x, y);
-  m_open.push({ v, m_use });
+
+  for (int i = 0; i < m_open.size(); ++i)
+  {
+    if (m_open[i].position == v)
+    {
+      return;
+    }
+  }
+  m_open.push_back({ v, m_use });
 }

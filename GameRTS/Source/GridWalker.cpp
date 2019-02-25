@@ -22,7 +22,7 @@ GridWalker::BackTracing()
     path.push_back(temp.position);
     v = temp.parent;
   }
-
+  path.push_back(m_StartPos);
   /*ClearClose();*/
   return path;
 }

@@ -263,16 +263,15 @@ RTSApplication::renderFrame() {
 
   ImGui::SFML::Render(*m_window);
 
-  /*
-  sf::Text text;
-  text.setPosition(0.f, 30.f);
-  text.setFont(*m_arialFont);
-  text.setCharacterSize(24);
-  text.setFillColor(sf::Color::Red);
-  text.setString( toString(1.0f/g_time().getFrameDelta()).c_str() );
-  m_window->draw(text);
-  */
-  m_window->display();
+//     sf::Text text;
+//     text.setPosition(0.f, 30.f);
+//     text.setFont(*m_arialFont);
+//     text.setCharacterSize(24);
+//     text.setFillColor(sf::Color::Red);
+//     text.setString( toString(1.0f/g_time().getFrameDelta()).c_str() );
+/*    m_window->draw(text);*/
+    
+    m_window->display();
 }
 
 void
