@@ -202,18 +202,11 @@ void
 AStar::PriorityQueue(Vector2I& v)
 {
   uint32 weight = m_pTiledMap->getCost(v.x, v.y);
+  uint32 distance = v.manhattanDist(m_end);
 
 
   for (std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
-    //     for (std::list<NodeListD>::iterator it2 = m_closeD.begin(); it != m_closeD.end(); ++it)
-    //     {
-    //       if (it2->position == m_use)
-    //       {
-    //         weight += it->weight;
-    //         continue;
-    //       }
-    //     }
     weight += m_closeD.back().weight;
     if (it->position == v)
     {
@@ -221,7 +214,9 @@ AStar::PriorityQueue(Vector2I& v)
     }
 
     uint32 otherWeight = it->weight;
-    if (weight < otherWeight)
+    uint32 otherDistance = it->position.manhattanDist(m_end);
+
+    if (weight + distance < otherWeight + otherDistance)
     {
       m_open.insert(it, { v, m_use,weight });
       return;
