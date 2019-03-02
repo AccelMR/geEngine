@@ -100,8 +100,10 @@
     <ClInclude Include="Include\BestFirstSearch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Dijkstra.h" />
     <ClInclude Include="Include\AStar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Dijkstra.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

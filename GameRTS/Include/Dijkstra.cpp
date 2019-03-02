@@ -161,12 +161,38 @@ void Dijkstra::Render()
      text.setFillColor(sf::Color::Black);
      text.setFont(*m_arialFont);
      
+     int32 tmpX = 0;
+     int32 tmpY = 0;
+     int32 tmpTypeTile = 0;
+     int32 tmpMarkTile = 0;
+     Vector2I clipRect;
+
+     int32 tileIniX = 0, tileIniY = 0;
+     int32 tileFinX = 0, tileFinY = 0;
+
+#ifdef MAP_IS_ISOMETRIC
+     int32 trashCoord = 0;
+//      m_pTiledMap->getScreenToMapCoords(m_scrStart.x, m_scrStart.y, tileIniX, trashCoord);
+//      m_pTiledMap->getScreenToMapCoords(m_scrEnd.x, m_scrEnd.y, tileFinX, trashCoord);
+
+     m_pTiledMap->getScreenToMapCoords(0, 0, trashCoord, tileIniY);
+     m_pTiledMap->getScreenToMapCoords(1920, 1080, trashCoord, tileFinY);
+#else
+     m_pTiledMap->getScreenToMapCoords(0, 0, tileIniX, tileIniY);
+     m_pTiledMap->getScreenToMapCoords(1920, 1080, tileFinX, tileFinY);
+#endif
 //      for (int32 i = 0; i < m_closeD.size(); ++i)
 //      {
-//         m_pTiledMap->getMapToScreenCoords(m_closeD[i].position.x, m_closeD[i].position.y, x, y);
+//        if (m_closeD[i].position.x < tileIniX || m_closeD[i].position.x > tileFinX ||
+//            m_closeD[i].position.y < tileIniY || m_closeD[i].position.y > tileFinY)
+//        {
+//          continue;
+//        }
+//         m_pTiledMap->getMapToScreenCoords(m_closeD[i].position.x,
+//                                           m_closeD[i].position.y, x, y);
 //         text.setPosition(x, y);
 //         text.setString(toString(m_closeD[i].weight).c_str());
-//         /*m_render->draw(text);*/
+//         m_render->draw(text);
 //      }
 }
 
