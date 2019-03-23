@@ -10,6 +10,11 @@ using namespace geEngineSDK;
 class RTSTiledMap;
 class GridWalker;
 
+namespace RTSGame{
+class RTSUnitType;
+}
+
+
 class RTSWorld
 {
  public:
@@ -51,7 +56,7 @@ class RTSWorld
 
  private:
   RTSTiledMap* m_pTiledMap;
-  //List<RTSUnitType*> m_lstUnitTypes;
+  Vector<RTSGame::RTSUnitType*> m_lstUnitTypes;
   //List<RTSUnit*> m_lstUnits;
 
   Vector<Vector2I> m_path;

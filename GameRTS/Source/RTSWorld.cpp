@@ -31,31 +31,36 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   m_pTiledMap->init(m_pTarget, Vector2I(256, 256));
 
   //Create the path finding classes and push them to the walker list
-  GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
-  GridWalker* gw2 = new BreadthFirstSearch(m_pTiledMap);
-  GridWalker* gw3 = new BestFirstSearch(m_pTiledMap);
-  GridWalker* gw4 = new Dijkstra(m_pTiledMap, m_pTarget);
-  GridWalker* gw5 = new AStar(m_pTiledMap);
+//   GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
+//   GridWalker* gw2 = new BreadthFirstSearch(m_pTiledMap);
+//   GridWalker* gw3 = new BestFirstSearch(m_pTiledMap);
+//   GridWalker* gw4 = new Dijkstra(m_pTiledMap, m_pTarget);
+//   GridWalker* gw5 = new AStar(m_pTiledMap);
 
-  m_walkersList.push_back(gw1);
-  m_walkersList.push_back(gw2);
-  m_walkersList.push_back(gw3);
-  m_walkersList.push_back(gw4);
-  m_walkersList.push_back(gw5);
+  m_walkersList.push_back(ge_new<DepthFirstSearch>(m_pTiledMap));
+  m_walkersList.push_back(ge_new<BreadthFirstSearch>(m_pTiledMap));
+  m_walkersList.push_back(ge_new<BestFirstSearch>(m_pTiledMap));
+  m_walkersList.push_back(ge_new<Dijkstra>(m_pTiledMap, m_pTarget));
+  m_walkersList.push_back(ge_new<AStar>(m_pTiledMap));
 
   //Init the walker objects
-  for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
-    m_walkersList[it]->Init();
-    m_walkersList[it]->setStartPosition(0, 0);
-    m_walkersList[it]->setEndPosition(0, 0);
+  for (auto & it : m_walkersList) {
+    it->Init();
+    it->setStartPosition(0, 0);
+    it->setEndPosition(0, 0);
   }
 
   //Set the first walker as the active walker
-  setCurrentWalker(m_walkersList.size() > 0 ? 0 : -1);
+  setCurrentWalker(!m_walkersList.empty() ? 0 : -1);
 
+  m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
+  m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
+  m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
 
-  RTSGame::RTSUnitType unitTypes;
-  unitTypes.loadAnimationData(m_pTarget, 1);
+  for(uint16 i = 0; i < m_lstUnitTypes.size(); ++i)
+  {
+    m_lstUnitTypes[i]->loadAnimationData(m_pTarget, i + 1);
+  }
 
   m_drawPath = sf::VertexArray(sf::LineStrip);
 
@@ -65,7 +70,7 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 void
 RTSWorld::destroy() {
  //Destroy all the walkers
-  while (m_walkersList.size() > 0) {
+  while (!m_walkersList.empty()) {
     ge_delete(m_walkersList.back());
     m_walkersList.pop_back();
   }
@@ -140,9 +145,9 @@ RTSWorld::setCurrentWalker(const int8 index) {
 
 void RTSWorld::ResetWalker()
 {//TODO: Mejorar esto
-  for (SIZE_T it = 0; it < m_walkersList.size(); ++it)
+  for (auto & it : m_walkersList)
   {
-    m_walkersList[it]->Reset();
+    it->Reset();
   }
   m_path.clear();
 }
@@ -151,8 +156,8 @@ void
 RTSWorld::SetStartPos(const int32 x, const int32 y)
 {
   //Init the walker objects
-  for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
-    m_walkersList[it]->setStartPosition(x, y);
+  for (auto & it : m_walkersList) {
+    it->setStartPosition(x, y);
   }
   /*m_activeWalker->setStartPosition(x, y);*/
 }
@@ -161,8 +166,8 @@ void
 RTSWorld::SetEndPos(const int32 x, const int32 y)
 {
   //Init the walker objects
-  for (SIZE_T it = 0; it < m_walkersList.size(); ++it) {
-    m_walkersList[it]->setEndPosition(x, y);
+  for (auto & it : m_walkersList) {
+    it->setEndPosition(x, y);
   }
   /*m_activeWalker->setEndPosition(x, y);*/
 }

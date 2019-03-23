@@ -64,6 +64,7 @@ namespace RTSGame {
    private:
      uint32 m_id;
      String m_name;
+     bool m_texLoaded;
 
 
      Vector<Animation> m_animationFrames;

@@ -8,7 +8,7 @@ using namespace geEngineSDK;
 using nlohmann::json;
 
 namespace RTSGame {
-  RTSUnitType::RTSUnitType() {}
+  RTSUnitType::RTSUnitType() : m_texLoaded(false) {  }
 
   RTSUnitType::~RTSUnitType() {}
 
@@ -36,7 +36,7 @@ namespace RTSGame {
 
       //Categorize all the animations in the file
       tmpStruct& tmpObj = unitsMap[parsedKey[0]];
-      tmpObj.id = static_cast<uint32>(unitsMap.size());
+      tmpObj.id = idUnitType/*static_cast<uint32>(unitsMap.size())*/;
       if (tmpObj.animation.end() == tmpObj.animation.find(parsedAnim[0])) {
         tmpObj.animation[parsedAnim[0]] = 0;
       }
@@ -99,6 +99,10 @@ namespace RTSGame {
 
     //Load the texture for this unit type
     m_pTarget = pTarget;
-    m_texture.loadFromFile(pTarget, filePath.toString() + "units.png");
+    if(!m_texLoaded)
+    {
+      m_texture.loadFromFile(pTarget, filePath.toString() + "units.png");
+      m_texLoaded = true;
+    }
   }
 }
