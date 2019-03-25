@@ -3,11 +3,11 @@
 
 namespace RTSGame{
 
-RTSUnit::RTSUnit(const SPtr<RTSTexture>& _texture,
-                 Vector<Animation> _animation) :
+RTSUnit::RTSUnit(const SPtr<RTSTexture>&  _texture,
+                 const Vector<Animation>& _animation) :
         m_texture(_texture),
         m_animation(_animation),
-        m_state(STATE::kAttack),
+        m_state(STATE::kIdle),
         m_direction(DIRECTIONS::kN),
         m_elapsedTime(0),
         m_frameCount(0) {}

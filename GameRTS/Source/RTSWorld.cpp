@@ -92,6 +92,8 @@ RTSWorld::destroy() {
     ge_delete(it);
   }
 
+  m_lstUnitTypes.clear();
+  m_lstUnits.clear();
   m_path.clear();
 }
 

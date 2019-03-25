@@ -18,7 +18,7 @@ class RTSUnit
 {
 public:
   RTSUnit(const SPtr<RTSTexture>& _texture,
-          Vector<Animation> _animation);
+          const Vector<Animation>& _animation);
 
   ~RTSUnit();
 
