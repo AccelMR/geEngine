@@ -282,7 +282,7 @@ RTSApplication::postInit() {
 
 void
 RTSApplication::postDestroy() {
-  /*m_gameWorld.destroy();*/
+  m_gameWorld.destroy();
 }
 
 
