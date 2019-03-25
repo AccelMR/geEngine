@@ -54,12 +54,17 @@ namespace RTSGame {
      ~RTSUnitType();
 
      static RTSUnitType*
-     loadFromFile(uint32 idUnitType);
-
-     
+     loadFromFile(uint32 idUnitType);     
 
      void
      loadAnimationData(sf::RenderTarget* pTarget, uint32 idUnitType);
+
+     Vector<Animation>
+     getAnimation() const{
+       return m_animationFrames;
+     }
+
+
 
    private:
      uint32 m_id;
@@ -68,7 +73,7 @@ namespace RTSGame {
 
 
      Vector<Animation> m_animationFrames;
-     RTSTexture m_texture;
+     /*RTSTexture m_texture;*/
      sf::RenderTarget* m_pTarget;
   };
 }

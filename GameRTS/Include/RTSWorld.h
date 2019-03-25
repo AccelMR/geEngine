@@ -9,9 +9,11 @@ using namespace geEngineSDK;
 
 class RTSTiledMap;
 class GridWalker;
+class RTSTexture;
 
 namespace RTSGame{
 class RTSUnitType;
+class RTSUnit;
 }
 
 
@@ -56,8 +58,10 @@ class RTSWorld
 
  private:
   RTSTiledMap* m_pTiledMap;
+
+  SPtr<RTSTexture> m_unitTexture;
   Vector<RTSGame::RTSUnitType*> m_lstUnitTypes;
-  //List<RTSUnit*> m_lstUnits;
+  Vector<RTSGame::RTSUnit*> m_lstUnits;
 
   Vector<Vector2I> m_path;
   sf::VertexArray m_drawPath;

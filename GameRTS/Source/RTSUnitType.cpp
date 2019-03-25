@@ -99,10 +99,10 @@ namespace RTSGame {
 
     //Load the texture for this unit type
     m_pTarget = pTarget;
-    if(!m_texLoaded)
-    {
-      m_texture.loadFromFile(pTarget, filePath.toString() + "units.png");
-      m_texLoaded = true;
-    }
+//     if(!m_texLoaded)
+//     {
+//       m_texture.loadFromFile(pTarget, filePath.toString() + "units.png");
+//       m_texLoaded = true;
+//     }
   }
 }

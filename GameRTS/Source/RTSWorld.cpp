@@ -2,6 +2,8 @@
 #include "RTSTiledMap.h"
 
 #include "RTSUnitType.h"
+#include "RTSUnit.h"
+#include "RTSTexture.h"
 #include "BestFirstSearch.h"
 #include "DepthFirstSearch.h"
 #include "BreadthFirstSearch.h"
@@ -31,12 +33,6 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   m_pTiledMap->init(m_pTarget, Vector2I(256, 256));
 
   //Create the path finding classes and push them to the walker list
-//   GridWalker* gw1 = new DepthFirstSearch(m_pTiledMap);
-//   GridWalker* gw2 = new BreadthFirstSearch(m_pTiledMap);
-//   GridWalker* gw3 = new BestFirstSearch(m_pTiledMap);
-//   GridWalker* gw4 = new Dijkstra(m_pTiledMap, m_pTarget);
-//   GridWalker* gw5 = new AStar(m_pTiledMap);
-
   m_walkersList.push_back(ge_new<DepthFirstSearch>(m_pTiledMap));
   m_walkersList.push_back(ge_new<BreadthFirstSearch>(m_pTiledMap));
   m_walkersList.push_back(ge_new<BestFirstSearch>(m_pTiledMap));
@@ -52,6 +48,9 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 
   //Set the first walker as the active walker
   setCurrentWalker(!m_walkersList.empty() ? 0 : -1);
+ 
+  m_unitTexture = std::make_shared<RTSTexture>();
+  m_unitTexture->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
 
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
@@ -60,6 +59,9 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   for(uint16 i = 0; i < m_lstUnitTypes.size(); ++i)
   {
     m_lstUnitTypes[i]->loadAnimationData(m_pTarget, i + 1);
+
+    m_lstUnits.push_back(ge_new<RTSGame::RTSUnit>(m_unitTexture,
+                                                  m_lstUnitTypes[i]->getAnimation()));
   }
 
   m_drawPath = sf::VertexArray(sf::LineStrip);
@@ -80,6 +82,16 @@ RTSWorld::destroy() {
     ge_delete(m_pTiledMap);
     m_pTiledMap = nullptr;
   }
+
+  for(auto & it : m_lstUnits)
+  {
+    ge_delete(it);
+  }
+  for(auto & it : m_lstUnitTypes)
+  {
+    ge_delete(it);
+  }
+
   m_path.clear();
 }
 
@@ -109,6 +121,11 @@ RTSWorld::update(float deltaTime) {
     }
   }
 
+  for (auto & it : m_lstUnits)
+  {
+    it->update(deltaTime);
+  }
+
 }
 
 void
@@ -118,6 +135,14 @@ RTSWorld::render() {
   if (!m_path.empty())
   {
     m_pTarget->draw(m_drawPath);
+  }
+
+  m_lstUnits[0]->setPosition(200, 200);
+  m_lstUnits[1]->setPosition(500, 500);
+  m_lstUnits[2]->setPosition(150, 150);
+  for(auto & it : m_lstUnits)
+  {
+    it->render();
   }
 }
 

@@ -183,6 +183,7 @@
     <ClCompile Include="Source\RTSConfig.cpp" />
     <ClCompile Include="Source\RTSTexture.cpp" />
     <ClCompile Include="Source\RTSTiledMap.cpp" />
+    <ClCompile Include="Source\RTSUnit.cpp" />
     <ClCompile Include="Source\RTSUnitType.cpp" />
     <ClCompile Include="Source\RTSWorld.cpp" />
     <ClCompile Include="Source\GridWalker.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Include\GridWalker.h" />
     <ClInclude Include="Include\RTSTexture.h" />
     <ClInclude Include="Include\RTSTiledMap.h" />
+    <ClInclude Include="Include\RTSUnit.h" />
     <ClInclude Include="Include\RTSUnitType.h" />
     <ClInclude Include="Include\RTSWorld.h" />
   </ItemGroup>
