@@ -23,7 +23,8 @@ class RTSWorld
   RTSWorld();
   ~RTSWorld();
 
- public:
+
+public:
   bool
   init(sf::RenderTarget* pTarget);
 
@@ -55,6 +56,14 @@ class RTSWorld
 
   void
   SetEndPos(const int32 x, const int32 y);
+
+  void
+  addUnit(RTSGame::RTSUnit*);
+
+  geEngineSDK::SPtr<RTSTexture> 
+  getUnitTexture() const {
+    return m_unitTexture;
+  }
 
  private:
   RTSTiledMap* m_pTiledMap;

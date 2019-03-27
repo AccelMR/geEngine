@@ -22,6 +22,8 @@
 #include "RTSConfig.h"
 #include "RTSApplication.h"
 #include "RTSTiledMap.h"
+#include "RTSUnitType.h"
+#include "RTSUnit.h"
 #include "GridWalker.h"
 
 void
@@ -34,6 +36,7 @@ mainMenu(RTSApplication* pApp);
 int32 g_iTerrainSelected = 0;
 int32 g_iStartSelection = 0;
 int32 g_iPathFinders = 0;
+int32 g_iUnitType = 0;
 
 RTSApplication::RTSApplication()
   : m_window(nullptr),
@@ -210,6 +213,23 @@ RTSApplication::updateFrame() {
     }
   }
 
+  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+     GameOptions::s_IsUnitMenuActive &&
+     !ImGui::IsMouseHoveringAnyWindow() &&
+     !ImGui::IsAnyItemHovered())
+  {
+    switch(g_iUnitType)
+    {
+    case RTSGame::UNIT_TYPE::kARCHER:
+      auto temp = ge_new<RTSGame::RTSUnit>(m_gameWorld.getUnitTexture(),);
+      break;
+
+
+    default:
+      break;
+    }
+  }
+
   if (0 == mousePosition.x ||
       sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
       sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
@@ -366,11 +386,19 @@ mainMenu(RTSApplication* pApp) {
     if (ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
     {
       GameOptions::s_IsPathMenuActive = false;
+      GameOptions::s_IsUnitMenuActive = false;
     }
 
     if (ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
     {
       GameOptions::s_IsEditorActive = false;
+      GameOptions::s_IsUnitMenuActive = false;
+    }
+
+    if(ImGui::Checkbox("Active Unit Editor", &GameOptions::s_IsUnitMenuActive))
+    {
+      GameOptions::s_IsEditorActive = false;
+      GameOptions::s_IsPathMenuActive = false;
     }
   }
   ImGui::End();
@@ -425,6 +453,21 @@ mainMenu(RTSApplication* pApp) {
         pApp->getWorld()->ResetWalker();
       }
 
+    }
+    ImGui::End();
+  }
+
+  if (GameOptions::s_IsUnitMenuActive)
+  {
+    // Editor
+    ImGui::Begin("Editor");
+    {
+      for(SIZE_T i = 0; i < RTSGame::UNIT_TYPE::kNUMOBJ; i++)
+      {
+        ImGui::RadioButton(RTSGame::UNIT_TYPE::unitType[i].c_str(),
+                           &g_iUnitType,
+                           static_cast<RTSGame::UNIT_TYPE::E> (i));
+      }
     }
     ImGui::End();
   }

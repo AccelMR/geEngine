@@ -47,6 +47,25 @@ namespace RTSGame {
     Vector<AnimationFrame> frames[DIRECTIONS::kNUM_DIRECTIONS];
   };
 
+  namespace UNIT_TYPE{
+  enum E
+  {
+    kARCHER = 0,
+    kKNIGHT,
+    kCROSSBOW,
+
+    kNUMOBJ
+  };
+
+  static Vector<String> unitType =
+  {
+    "Archer",
+    "Knight",
+    "Crossbow"
+  };
+
+  }
+
   class RTSUnitType
   {
    public:

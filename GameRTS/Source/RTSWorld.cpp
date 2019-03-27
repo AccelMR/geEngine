@@ -49,8 +49,8 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   //Set the first walker as the active walker
   setCurrentWalker(!m_walkersList.empty() ? 0 : -1);
  
-  m_unitTexture = std::make_shared<RTSTexture>();
-  m_unitTexture->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
+  getUnitTexture(std::make_shared<RTSTexture>());
+  getUnitTexture()->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
 
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
@@ -59,9 +59,6 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   for(uint16 i = 0; i < m_lstUnitTypes.size(); ++i)
   {
     m_lstUnitTypes[i]->loadAnimationData(m_pTarget, i + 1);
-
-    m_lstUnits.push_back(ge_new<RTSGame::RTSUnit>(m_unitTexture,
-                                                  m_lstUnitTypes[i]->getAnimation()));
   }
 
   m_drawPath = sf::VertexArray(sf::LineStrip);
@@ -139,9 +136,6 @@ RTSWorld::render() {
     m_pTarget->draw(m_drawPath);
   }
 
-  m_lstUnits[0]->setPosition(200, 200);
-  m_lstUnits[1]->setPosition(500, 500);
-  m_lstUnits[2]->setPosition(150, 150);
   for(auto & it : m_lstUnits)
   {
     it->render();
@@ -197,4 +191,10 @@ RTSWorld::SetEndPos(const int32 x, const int32 y)
     it->setEndPosition(x, y);
   }
   /*m_activeWalker->setEndPosition(x, y);*/
+}
+
+void
+RTSWorld::addUnit(RTSGame::RTSUnit* unit)
+{
+  m_lstUnits.push_back(unit);
 }
