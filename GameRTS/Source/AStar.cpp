@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <SFML/Graphics.hpp>
+namespace RTSGame {
 
 /*
 */
@@ -36,7 +37,8 @@ AStar::~AStar()
 
 bool AStar::Init()
 {
-  if (m_nodeGrid) {
+  if(m_nodeGrid)
+  {
     Destroy();
   }
   m_nodeGrid = m_pTiledMap;
@@ -54,7 +56,7 @@ void AStar::Destroy()
 
 WALKSTATE::E AStar::Update()
 {
-  if (m_open.size() > 0)
+  if(m_open.size() > 0)
   {
     m_use = m_open.front().position;
     m_closeD.push_back({ m_use,m_open.front().parent, m_open.front().weight });
@@ -62,12 +64,12 @@ WALKSTATE::E AStar::Update()
     m_open.pop_front();
     m_nodeGrid->setVisited(m_use.x, m_use.y, true);
 
-    if (m_use == m_end)
+    if(m_use == m_end)
     {
       m_currentState = WALKSTATE::REACHEDGOAL;
       return m_currentState;
     }
-    if (m_use != m_start)
+    if(m_use != m_start)
     {
       m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
     }
@@ -75,57 +77,57 @@ WALKSTATE::E AStar::Update()
     int32 x, y;
     x = m_use.x + 1;
     y = m_use.y;
-    if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
+    if(m_use.x < (m_pTiledMap->getMapSize().x - 1))
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x + 1;
     y = m_use.y + 1;
-    if (m_use.x < (m_pTiledMap->getMapSize().x - 1) &&
-      m_use.y < (m_pTiledMap->getMapSize().y - 1))
+    if(m_use.x < (m_pTiledMap->getMapSize().x - 1) &&
+       m_use.y < (m_pTiledMap->getMapSize().y - 1))
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x;
     y = m_use.y + 1;
-    if (m_use.y < (m_pTiledMap->getMapSize().y - 1))
+    if(m_use.y < (m_pTiledMap->getMapSize().y - 1))
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x - 1;
     y = m_use.y + 1;
-    if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
+    if(m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x - 1;
     y = m_use.y;
-    if (m_use.x > 0)
+    if(m_use.x > 0)
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x - 1;
     y = m_use.y - 1;
-    if (m_use.x > 0 && m_use.y > 0)
+    if(m_use.x > 0 && m_use.y > 0)
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x;
     y = m_use.y - 1;
-    if (m_use.y > 0)
+    if(m_use.y > 0)
     {
       visitGridNode(x, y);
     }
 
     x = m_use.x + 1;
     y = m_use.y - 1;
-    if (m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
+    if(m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
     {
       visitGridNode(x, y);
     }
@@ -150,12 +152,12 @@ void AStar::Reset()
   m_use = Vector2I::ZERO;
 
   /*ClearClose();*/
-  for (Vector<NodeListD>::iterator it = m_closeD.begin(); it != m_closeD.end(); ++it)
+  for(Vector<NodeListD>::iterator it = m_closeD.begin(); it != m_closeD.end(); ++it)
   {
     m_pTiledMap->setVisited(it->position.x, it->position.y, false);
 
-    if (m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::START ||
-      m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::END)
+    if(m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::START ||
+       m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::END)
     {
       continue;
     }
@@ -180,16 +182,17 @@ void AStar::Reset()
 
 void AStar::visitGridNode(int32 x, int32 y)
 {
-  if (m_nodeGrid->getVisited(x, y) ||
-    m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle) {
+  if(m_nodeGrid->getVisited(x, y) ||
+     m_nodeGrid->getType(x, y) == TERRAIN_TYPE::kObstacle)
+  {
     return;
   }
 
   Vector2I v(x, y);
 
-  for (std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
+  for(std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
-    if (it->position == v)
+    if(it->position == v)
     {
       return;
     }
@@ -205,10 +208,10 @@ AStar::PriorityQueue(Vector2I& v)
   uint32 distance = v.manhattanDist(m_end);
 
 
-  for (std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
+  for(std::list<NodeListD>::iterator it = m_open.begin(); it != m_open.end(); ++it)
   {
     weight += m_closeD.back().weight;
-    if (it->position == v)
+    if(it->position == v)
     {
       return;
     }
@@ -216,7 +219,7 @@ AStar::PriorityQueue(Vector2I& v)
     uint32 otherWeight = it->weight;
     uint32 otherDistance = it->position.manhattanDist(m_end);
 
-    if (weight + distance < otherWeight + otherDistance)
+    if(weight + distance < otherWeight + otherDistance)
     {
       m_open.insert(it, { v, m_use,weight });
       return;
@@ -233,9 +236,9 @@ Vector<Vector2I> AStar::BackTracing()
   NodeListD temp = m_closeD.back();
 
   int32 i = m_closeD.size() - 1;
-  while (temp.parent != m_StartPos)
+  while(temp.parent != m_StartPos)
   {
-    while (temp.position != v)
+    while(temp.position != v)
     {
       temp = m_closeD[--i];
     }
@@ -246,4 +249,5 @@ Vector<Vector2I> AStar::BackTracing()
   /*ClearClose();*/
   path.push_back(m_start);
   return path;
+}
 }

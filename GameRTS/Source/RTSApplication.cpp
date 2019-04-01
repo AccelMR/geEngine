@@ -25,6 +25,9 @@
 #include "RTSUnitType.h"
 #include "RTSUnit.h"
 #include "GridWalker.h"
+#include "RTSWorld.h"
+
+namespace RTSGame{
 
 void
 loadMapFromFile(RTSApplication* pApp);
@@ -54,12 +57,13 @@ RTSApplication::run() {
   Time::startUp();
   GameOptions::startUp();
 
-  __try {
+  __try
+  {
     initSystems();
     gameLoop();
     destroySystems();
   }
-  __except (g_crashHandler().reportCrash(GetExceptionInformation())) {
+  __except(g_crashHandler().reportCrash(GetExceptionInformation())) {
     PlatformUtility::terminate(true);
   }
 
@@ -73,7 +77,8 @@ RTSApplication::run() {
 
 void
 RTSApplication::initSystems() {
-  if (nullptr != m_window) {  //Window already initialized
+  if(nullptr != m_window)
+  {  //Window already initialized
     return; //Shouldn't do anything
   }
 
@@ -82,17 +87,20 @@ RTSApplication::initSystems() {
                                                     GameOptions::s_Resolution.y),
                                       "RTS Game",
                                       sf::Style::Fullscreen);
-  if (nullptr == m_window) {
+  if(nullptr == m_window)
+  {
     GE_EXCEPT(InvalidStateException, "Couldn't create Application Window");
   }
 
   m_arialFont = ge_new<sf::Font>();
-  if (nullptr == m_arialFont) {
+  if(nullptr == m_arialFont)
+  {
     GE_EXCEPT(InvalidStateException, "Couldn't create a Font");
   }
-  
-  
-  if (!m_arialFont->loadFromFile("Fonts/arial.ttf")) {
+
+
+  if(!m_arialFont->loadFromFile("Fonts/arial.ttf"))
+  {
     GE_EXCEPT(FileNotFoundException, "Arial font not found");
   }
 
@@ -110,31 +118,76 @@ void
 RTSApplication::destroySystems() {
   ImGui::SFML::Shutdown();
 
-  if (nullptr != m_window) {
+  if(nullptr != m_window)
+  {
     m_window->close();
     ge_delete(m_window);
   }
 
-  if (nullptr != m_arialFont) {
+  if(nullptr != m_arialFont)
+  {
     ge_delete(m_arialFont);
   }
 }
 
 void
 RTSApplication::gameLoop() {
-  if (nullptr == m_window) {  //Windows not yet initialized
+  if(nullptr == m_window)
+  {  //Windows not yet initialized
     return; //Shouldn't do anything
   }
 
   postInit();
 
-  while (m_window->isOpen()) {
+  while(m_window->isOpen())
+  {
+
+    auto map = m_gameWorld.getTiledMap();
+    int32 tileX, tileY;
+    sf::Vector2i mousePos = sf::Mouse::getPosition();
+    map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
     sf::Event event;
-    while (m_window->pollEvent(event)) {
+
+    while(m_window->pollEvent(event))
+    {
       ImGui::SFML::ProcessEvent(event);
-      
-      if (event.type == sf::Event::Closed) {
+
+      switch(event.type)
+      {
+      case sf::Event::Closed:
         m_window->close();
+        break;
+
+      case sf::Event::MouseButtonPressed:
+        if(event.mouseButton.button == sf::Mouse::Left)
+        {
+          if(!ImGui::IsAnyItemFocused() &&
+             !ImGui::IsMouseHoveringAnyWindow() &&
+             !ImGui::IsAnyItemHovered())
+          {
+            switch(g_iUnitType)
+            {
+            case RTSGame::UNIT_TYPE::kARCHER:
+              m_gameWorld.createUnit(UNIT_TYPE::kARCHER, tileX, tileY);
+              break;
+            case RTSGame::UNIT_TYPE::kKNIGHT :
+              m_gameWorld.createUnit(UNIT_TYPE::kKNIGHT, tileX, tileY);
+              break;
+            case RTSGame::UNIT_TYPE::kCROSSBOW:
+              m_gameWorld.createUnit(UNIT_TYPE::kCROSSBOW, tileX, tileY);
+              break;
+
+            default:
+              break;
+            }
+          }
+
+        }
+        break;
+
+
+      default:
+        break;
       }
     }
 
@@ -154,9 +207,10 @@ RTSApplication::updateFrame() {
   sf::Time elapsedTime = myClock.getElapsedTime();
 
   float deltaTime = g_time().getFrameDelta();
-  
+
   m_fpsTimer += deltaTime;
-  if (1.0f < m_fpsTimer) {
+  if(1.0f < m_fpsTimer)
+  {
     m_framesPerSecond = m_fpsCounter;
     m_fpsCounter = 0.0f;
     m_fpsTimer = 0.0f;
@@ -175,19 +229,21 @@ RTSApplication::updateFrame() {
   mousePosition.x = sf::Mouse::getPosition(*m_window).x;
   mousePosition.y = sf::Mouse::getPosition(*m_window).y;
 
-    auto map = m_gameWorld.getTiledMap();
-    int32 tileX, tileY;
-    sf::Vector2i mousePos = sf::Mouse::getPosition();
-    map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
+  auto map = m_gameWorld.getTiledMap();
+  int32 tileX, tileY;
+  sf::Vector2i mousePos = sf::Mouse::getPosition();
+  map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
 
   //Terrain editor
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
-      GameOptions::s_IsEditorActive &&
-      !ImGui::IsMouseHoveringAnyWindow() &&
-      !ImGui::IsAnyItemHovered()) {
+  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+     GameOptions::s_IsEditorActive &&
+     !ImGui::IsMouseHoveringAnyWindow() &&
+     !ImGui::IsAnyItemHovered())
+  {
 
-    for (SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++) {
-      for (SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++) 
+    for(SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++)
+    {
+      for(SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++)
       {
         map->setType(tileX + i, tileY + j, g_iTerrainSelected);
         map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
@@ -196,70 +252,59 @@ RTSApplication::updateFrame() {
   }
 
   //Path finder Menu
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&
-      GameOptions::s_IsPathMenuActive &&
-      !ImGui::IsMouseHoveringAnyWindow() &&
-      !ImGui::IsAnyItemHovered()) {
-   
+  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+     GameOptions::s_IsPathMenuActive &&
+     !ImGui::IsMouseHoveringAnyWindow() &&
+     !ImGui::IsAnyItemHovered())
+  {
+
     map->setMark(tileX, tileY, g_iStartSelection);
-    
-    if (g_iStartSelection == PFMARK::START)
+
+    if(g_iStartSelection == PFMARK::START)
     {
       m_gameWorld.SetStartPos(tileX, tileY);
     }
-    if (g_iStartSelection == PFMARK::END)
+    if(g_iStartSelection == PFMARK::END)
     {
       m_gameWorld.SetEndPos(tileX, tileY);
     }
   }
 
-  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
-     GameOptions::s_IsUnitMenuActive &&
-     !ImGui::IsMouseHoveringAnyWindow() &&
-     !ImGui::IsAnyItemHovered())
+
+  if(0 == mousePosition.x ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
   {
-    switch(g_iUnitType)
-    {
-    case RTSGame::UNIT_TYPE::kARCHER:
-      auto temp = ge_new<RTSGame::RTSUnit>(m_gameWorld.getUnitTexture(),);
-      break;
-
-
-    default:
-      break;
-    }
-  }
-
-  if (0 == mousePosition.x ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 #ifdef MAP_IS_ISOMETRIC
     axisMovement += Vector2(-1.f, 1.f);
 #else
     axisMovement += Vector2(-1.f, 0.f);
 #endif
   }
-  if (GameOptions::s_Resolution.x -1 == mousePosition.x ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+  if(GameOptions::s_Resolution.x - 1 == mousePosition.x ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+  {
 #ifdef MAP_IS_ISOMETRIC
     axisMovement += Vector2(1.f, -1.f);
 #else
     axisMovement += Vector2(1.f, 0.f);
 #endif
   }
-  if (0 == mousePosition.y ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+  if(0 == mousePosition.y ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+  {
 #ifdef MAP_IS_ISOMETRIC
     axisMovement += Vector2(-1.f, -1.f);
 #else
     axisMovement += Vector2(0.f, -1.f);
 #endif
   }
-  if (GameOptions::s_Resolution.y - 1 == mousePosition.y ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+  if(GameOptions::s_Resolution.y - 1 == mousePosition.y ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+     sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+  {
 #ifdef MAP_IS_ISOMETRIC
     axisMovement += Vector2(1.f, 1.f);
 #else
@@ -283,15 +328,15 @@ RTSApplication::renderFrame() {
 
   ImGui::SFML::Render(*m_window);
 
-//     sf::Text text;
-//     text.setPosition(0.f, 30.f);
-//     text.setFont(*m_arialFont);
-//     text.setCharacterSize(24);
-//     text.setFillColor(sf::Color::Red);
-//     text.setString( toString(1.0f/g_time().getFrameDelta()).c_str() );
-/*    m_window->draw(text);*/
-    
-    m_window->display();
+  //     sf::Text text;
+  //     text.setPosition(0.f, 30.f);
+  //     text.setFont(*m_arialFont);
+  //     text.setCharacterSize(24);
+  //     text.setFillColor(sf::Color::Red);
+  //     text.setString( toString(1.0f/g_time().getFrameDelta()).c_str() );
+  /*    m_window->draw(text);*/
+
+  m_window->display();
 }
 
 void
@@ -327,15 +372,18 @@ loadMapFromFile(RTSApplication* pApp) {
   ofn.nMaxFile = MAX_PATH;
   ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-  if (GetOpenFileNameW(&ofn)) {
-    if (fileName.size() > 0) {
+  if(GetOpenFileNameW(&ofn))
+  {
+    if(fileName.size() > 0)
+    {
       bMustLoad = true;
     }
   }
 
   SetCurrentDirectoryW(UTF8::toWide(currentDirectory.toString()).c_str());
 
-  if (bMustLoad) {
+  if(bMustLoad)
+  {
     pApp->getWorld()->getTiledMap()->loadFromImageFile(pApp->getRenderWindow(),
                                                        toString(fileName));
   }
@@ -343,23 +391,28 @@ loadMapFromFile(RTSApplication* pApp) {
 
 void
 mainMenu(RTSApplication* pApp) {
-  if (ImGui::BeginMainMenuBar()) {
-    if (ImGui::BeginMenu("Map")) {
-      if (ImGui::MenuItem("Load...", "CTRL+O")) {
+  if(ImGui::BeginMainMenuBar())
+  {
+    if(ImGui::BeginMenu("Map"))
+    {
+      if(ImGui::MenuItem("Load...", "CTRL+O"))
+      {
         loadMapFromFile(pApp);
       }
-      if (ImGui::MenuItem("Save...", "CTRL+S")) {
+      if(ImGui::MenuItem("Save...", "CTRL+S"))
+      {
 
       }
       ImGui::Separator();
 
-      if (ImGui::MenuItem("Quit", "CTRL+Q")) {
+      if(ImGui::MenuItem("Quit", "CTRL+Q"))
+      {
         pApp->getRenderWindow()->close();
       }
 
       ImGui::EndMenu();
     }
-    
+
     ImGui::EndMainMenuBar();
   }
 
@@ -368,13 +421,13 @@ mainMenu(RTSApplication* pApp) {
     ImGui::Text("Framerate: %f", pApp->getFPS());
 
     ImGui::SliderFloat("Map movement speed X",
-      &GameOptions::s_MapMovementSpeed.x,
-      0.0f,
-      10240.0f);
+                       &GameOptions::s_MapMovementSpeed.x,
+                       0.0f,
+                       10240.0f);
     ImGui::SliderFloat("Map movement speed Y",
-      &GameOptions::s_MapMovementSpeed.y,
-      0.0f,
-      10240.0f);
+                       &GameOptions::s_MapMovementSpeed.y,
+                       0.0f,
+                       10240.0f);
 
     ImGui::Checkbox("Show grid", &GameOptions::s_MapShowGrid);
 
@@ -383,13 +436,13 @@ mainMenu(RTSApplication* pApp) {
     ImGui::Text("Extra Windows");
     ImGui::Separator();
 
-    if (ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
+    if(ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
     {
       GameOptions::s_IsPathMenuActive = false;
       GameOptions::s_IsUnitMenuActive = false;
     }
 
-    if (ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
+    if(ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
     {
       GameOptions::s_IsEditorActive = false;
       GameOptions::s_IsUnitMenuActive = false;
@@ -403,7 +456,8 @@ mainMenu(RTSApplication* pApp) {
   }
   ImGui::End();
 
-  if (GameOptions::s_IsEditorActive){
+  if(GameOptions::s_IsEditorActive)
+  {
 
     // Editor
     ImGui::Begin("Editor");
@@ -412,7 +466,8 @@ mainMenu(RTSApplication* pApp) {
       ImGui::Text("Terrain Texture");
 
 
-      for (SIZE_T i = 0; i < TERRAIN_TYPE::kNumObjects; i++) {
+      for(SIZE_T i = 0; i < TERRAIN_TYPE::kNumObjects; i++)
+      {
         ImGui::RadioButton(TERRAIN_TYPE::ES[i].c_str(),
                            &g_iTerrainSelected,
                            static_cast<TERRAIN_TYPE::E> (i));
@@ -424,12 +479,13 @@ mainMenu(RTSApplication* pApp) {
     ImGui::End();
   }
 
-  if (GameOptions::s_IsPathMenuActive) {
+  if(GameOptions::s_IsPathMenuActive)
+  {
 
     ImGui::Begin("Path finders");
     {
       ImGui::Text("Select Positions");
-     /* ImGui::Spacing(3);*/
+      /* ImGui::Spacing(3);*/
 
       ImGui::RadioButton("Start Position", &g_iStartSelection, 1);
       ImGui::RadioButton("End Position", &g_iStartSelection, 10);
@@ -439,7 +495,7 @@ mainMenu(RTSApplication* pApp) {
       ImGui::Text("Path Finder");
       /*ImGui::Spacing(3);*/
 
-      for (SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++) 
+      for(SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++)
       {
         ImGui::RadioButton(TYPE_PATH_FINDER::ES[i].c_str(),
                            &g_iPathFinders,
@@ -447,7 +503,7 @@ mainMenu(RTSApplication* pApp) {
       }
 
       /*ImGui::Spacing(5);*/
-      if (ImGui::Button("Start", { 200, 50 }))
+      if(ImGui::Button("Start", { 200, 50 }))
       {
         pApp->getWorld()->setCurrentWalker(g_iPathFinders);
         pApp->getWorld()->ResetWalker();
@@ -457,7 +513,7 @@ mainMenu(RTSApplication* pApp) {
     ImGui::End();
   }
 
-  if (GameOptions::s_IsUnitMenuActive)
+  if(GameOptions::s_IsUnitMenuActive)
   {
     // Editor
     ImGui::Begin("Editor");
@@ -472,4 +528,5 @@ mainMenu(RTSApplication* pApp) {
     ImGui::End();
   }
 
+}
 }

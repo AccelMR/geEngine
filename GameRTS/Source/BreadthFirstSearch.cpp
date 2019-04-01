@@ -1,7 +1,7 @@
 #include "..\Include\BreadthFirstSearch.h"
 
 #include <iostream>
-
+namespace RTSGame{
 /*
 */
 BreadthFirstSearch::BreadthFirstSearch():
@@ -177,4 +177,5 @@ void BreadthFirstSearch::visitGridNode(int32 x, int32 y)
   }
   
   m_open.push_back({ v,m_use });
+}
 }

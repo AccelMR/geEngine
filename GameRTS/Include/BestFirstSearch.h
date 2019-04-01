@@ -2,8 +2,8 @@
 
 #include "GridWalker.h"
 
-
-class BestFirstSearch:
+namespace RTSGame{
+class BestFirstSearch :
   public GridWalker
 {
 public:
@@ -26,9 +26,13 @@ public:
   void Reset() override;
 
 
-  bool weightedGraphSupported() { return false; }
+  bool weightedGraphSupported() {
+    return false;
+  }
 
-  bool heuristicsSupported() { return true; }
+  bool heuristicsSupported() {
+    return true;
+  }
 
 private:
 
@@ -41,9 +45,10 @@ private:
   RTSTiledMap *m_nodeGrid; //Same size as map grid
 
   void
-  PriorityQueue(Vector2I& v);
+    PriorityQueue(Vector2I& v);
 
 protected:
   virtual void visitGridNode(int32 x, int32 y) override;
 
 };
+}

@@ -11,30 +11,33 @@
 
 using namespace geEngineSDK;
 
+
+namespace RTSGame{
 class RTSTexture;
 
-namespace TERRAIN_TYPE {
-  enum E {
-    kWater = 0,
-    kGrass,
-    kMarsh,
-    kObstacle,
-    kNumObjects, //How many terrains we have
-  };
+namespace TERRAIN_TYPE{
+enum E
+{
+  kWater = 0,
+  kGrass,
+  kMarsh,
+  kObstacle,
+  kNumObjects, //How many terrains we have
+};
 
-  static Vector<String> ES = {
-    "Water",
-    "Grass" ,
-    "Marsh",
-    "Obstacle",
-  };
+static Vector<String> ES = {
+  "Water",
+  "Grass" ,
+  "Marsh",
+  "Obstacle",
+};
 
-  static Vector<int8> Cost = { 2, 1, 4, 120 };
+static Vector<int8> Cost = { 2, 1, 4, 120 };
 }
 
- enum PFMARK
+enum PFMARK
 {
-  NONE=0,
+  NONE = 0,
   START,
   N,
   NE,
@@ -52,143 +55,143 @@ class RTSTiledMap
 {
   class MapTile
   {
-   public:
+  public:
     MapTile();
     MapTile(const int8 idType, const int8 cost);
     MapTile(const MapTile& copy);
-    
+
     MapTile&
-    operator=(const MapTile& rhs);
+      operator=(const MapTile& rhs);
 
     FORCEINLINE uint8
-    getType() const {
+      getType() const {
       return m_idType;
     }
 
     void
-    setType(const int8 idType) {
+      setType(const int8 idType) {
       m_idType = idType;
     }
 
     FORCEINLINE int8
-    getCost() const {
+      getCost() const {
       return m_cost;
     }
 
     void
-    setCost(const int8 cost) {
+      setCost(const int8 cost) {
       m_cost = cost;
     }
 
     void
-    setMark(const uint8 mark) {
+      setMark(const uint8 mark) {
       m_pfMark = mark;
     }
 
     uint8
-    getMark() const {
+      getMark() const {
       return m_pfMark;
     }
 
     void
-    setVisited(bool visited) {
+      setVisited(bool visited) {
       m_visited = visited;
     }
 
     bool
-    getVisited() { 
-      return m_visited; 
+      getVisited() {
+      return m_visited;
     }
 
-   private:
+  private:
     uint8 m_idType;
     int8 m_cost;
     uint8 m_pfMark;
-    bool m_visited; 
+    bool m_visited;
   };
 
- public:
+public:
   RTSTiledMap();
   RTSTiledMap(sf::RenderTarget* pTarget, const Vector2I& mapSize);
-  RTSTiledMap( const Vector2I& mapSize);
+  RTSTiledMap(const Vector2I& mapSize);
   ~RTSTiledMap();
 
- public:
+public:
   bool
-  init(sf::RenderTarget* pTarget, const Vector2I& mapSize);
+    init(sf::RenderTarget* pTarget, const Vector2I& mapSize);
 
   void
-  destroy();
+    destroy();
 
   void
-  update(float deltaTime);
-  
+    update(float deltaTime);
+
   void
-  render();
+    render();
 
   Vector2I
-  getMapSize() const {
+    getMapSize() const {
     return m_mapSize;
   }
 
   bool
-  loadFromImageFile(sf::RenderTarget* pTarget, String fileName);
+    loadFromImageFile(sf::RenderTarget* pTarget, String fileName);
 
   bool
-  saveToImageFile(sf::RenderTarget* pTarget, String fileName);
+    saveToImageFile(sf::RenderTarget* pTarget, String fileName);
 
   int8
-  getCost(const int32 x, const int32 y) const;
+    getCost(const int32 x, const int32 y) const;
 
   void
-  setCost(const int32 x, const int32 y, const int8 cost);
+    setCost(const int32 x, const int32 y, const int8 cost);
 
   void
-  setMark(const int32 x, const int32 y, const uint8 mark);
+    setMark(const int32 x, const int32 y, const uint8 mark);
 
   void
-  setVisited(const uint32 x, const uint32 y, const bool visited);
+    setVisited(const uint32 x, const uint32 y, const bool visited);
 
   bool
-  getVisited(const uint32 x, const uint32 y);
+    getVisited(const uint32 x, const uint32 y);
 
   uint8
-  getMark(const int32 x, const int32 y) const;
+    getMark(const int32 x, const int32 y) const;
 
   int8
-  getType(const int32 x, const int32 y) const;
+    getType(const int32 x, const int32 y) const;
 
   void
-  setType(const int32 x, const int32 y, const uint8 idtype);
+    setType(const int32 x, const int32 y, const uint8 idtype);
 
   void
-  setStart(const uint32 x, const uint32 y) {
+    setStart(const uint32 x, const uint32 y) {
     m_scrStart.x = x;
     m_scrStart.y = y;
     preCalc();
   }
 
   void
-  getStart(uint32 &x, uint32 &y) const {
+    getStart(uint32 &x, uint32 &y) const {
     x = m_scrStart.x;
     y = m_scrStart.y;
   }
 
   void
-  setEnd(const uint32 x, const uint32 y) {
+    setEnd(const uint32 x, const uint32 y) {
     m_scrEnd.x = x;
     m_scrEnd.y = y;
     preCalc();
   }
 
   void
-  getEnd(uint32 &x, uint32 &y) const {
+    getEnd(uint32 &x, uint32 &y) const {
     x = m_scrEnd.x;
     y = m_scrEnd.y;
   }
 
   void
-  preCalc() {
+    preCalc() {
     m_PreCalc_MidResolution = (m_scrEnd - m_scrStart) / 2;
 #ifdef MAP_IS_ISOMETRIC
     m_PreCalc_MaxCameraCoord.x = m_mapSize.x * GameOptions::TILEHALFSIZE.x;
@@ -199,30 +202,30 @@ class RTSTiledMap
   }
 
   void
-  moveCamera(const float dx, const float dy);
+    moveCamera(const float dx, const float dy);
 
   void
-  setCameraStartPosition(const int32 x, const int32 y);
+    setCameraStartPosition(const int32 x, const int32 y);
 
   void
-  getCameraStartPosition(int32 &x, int32 &y) const {
+    getCameraStartPosition(int32 &x, int32 &y) const {
     x = m_iCamera.x;
     y = m_iCamera.y;
   }
 
   void
-  getScreenToMapCoords(const int32 scrX,
-                       const int32 scrY,
-                       int32 &mapX,
-                       int32 &mapY);
+    getScreenToMapCoords(const int32 scrX,
+                         const int32 scrY,
+                         int32 &mapX,
+                         int32 &mapY);
 
   void
-  getMapToScreenCoords(const int32 mapX,
-                       const int32 mapY,
-                       int32 &scrX,
-                       int32 &scrY);
+    getMapToScreenCoords(const int32 mapX,
+                         const int32 mapY,
+                         int32 &scrX,
+                         int32 &scrY);
 
- private:
+private:
   Vector2I m_mapSize;
   Vector<MapTile> m_mapGrid;
   Vector<RTSTexture> m_mapTextures;
@@ -243,3 +246,5 @@ class RTSTiledMap
   Vector2I m_refEndMark, m_refStartMark;
   bool m_StartMarked, m_EndMarked;
 };
+}
+

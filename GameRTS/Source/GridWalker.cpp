@@ -1,5 +1,5 @@
 #include "..\Include\GridWalker.h"
-
+namespace RTSGame{
 GridWalker::GridWalker(){}
 
 GridWalker::~GridWalker(){}
@@ -13,9 +13,9 @@ GridWalker::BackTracing()
   NodeList temp = m_close.back();
 
   int32 i = m_close.size() - 1;
-  while (temp.parent != m_StartPos)
+  while(temp.parent != m_StartPos)
   {
-    while (temp.position != v)
+    while(temp.position != v)
     {
       temp = m_close[--i];
     }
@@ -29,12 +29,12 @@ GridWalker::BackTracing()
 
 void GridWalker::ClearClose()
 {
-  for (Vector<NodeList>::iterator it = m_close.begin(); it != m_close.end(); ++it)
+  for(Vector<NodeList>::iterator it = m_close.begin(); it != m_close.end(); ++it)
   {
     m_pTiledMap->setVisited(it->position.x, it->position.y, false);
 
-    if (m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::START ||
-      m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::END)
+    if(m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::START ||
+       m_pTiledMap->getMark(it->position.x, it->position.y) == PFMARK::END)
     {
       continue;
     }
@@ -42,4 +42,5 @@ void GridWalker::ClearClose()
     m_pTiledMap->setMark(it->position.x, it->position.y, PFMARK::NONE);
   }
   m_close.clear();
+}
 }

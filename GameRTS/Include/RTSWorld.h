@@ -5,16 +5,17 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "RTSUnit.h"
+
 using namespace geEngineSDK;
 
-class RTSTiledMap;
-class GridWalker;
-class RTSTexture;
 
 namespace RTSGame{
 class RTSUnitType;
+class RTSTiledMap;
+class GridWalker;
+class RTSTexture;
 class RTSUnit;
-}
 
 
 class RTSWorld
@@ -60,6 +61,9 @@ public:
   void
   addUnit(RTSGame::RTSUnit*);
 
+  void
+  createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY);
+
   geEngineSDK::SPtr<RTSTexture> 
   getUnitTexture() const {
     return m_unitTexture;
@@ -82,3 +86,4 @@ public:
 
   sf::RenderTarget* m_pTarget;
 };
+}

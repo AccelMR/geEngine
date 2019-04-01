@@ -2,8 +2,8 @@
 
 
 #include "GridWalker.h"
-
-class DepthFirstSearch:
+namespace RTSGame{
+class DepthFirstSearch :
   public GridWalker
 {
 public:
@@ -26,10 +26,14 @@ public:
   void Reset() override;
 
 
-  bool weightedGraphSupported() { return false; }
+  bool weightedGraphSupported() {
+    return false;
+  }
 
 
-  bool heuristicsSupported() { return false; };
+  bool heuristicsSupported() {
+    return false;
+  };
 
 private:
   deque<NodeList> m_open;
@@ -41,3 +45,4 @@ protected:
   virtual void visitGridNode(int32 x, int32 y) override;
 
 };
+}

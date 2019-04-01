@@ -1,8 +1,8 @@
 #pragma once
 
 #include "GridWalker.h"
-
-class BreadthFirstSearch:
+namespace RTSGame{
+class BreadthFirstSearch :
   public GridWalker
 {
 public:
@@ -26,10 +26,14 @@ public:
   void Reset() override;
 
 
-  bool weightedGraphSupported() { return false; }
+  bool weightedGraphSupported() {
+    return false;
+  }
 
 
-  bool heuristicsSupported() { return false; };
+  bool heuristicsSupported() {
+    return false;
+  };
 
 private:
 
@@ -42,3 +46,4 @@ protected:
   virtual void visitGridNode(int32 x, int32 y) override;
 
 };
+}

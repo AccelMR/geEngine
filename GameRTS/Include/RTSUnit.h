@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RTSUnitType.h"
+#include "RTSTiledMap.h"
 
 namespace RTSGame{
 
@@ -26,7 +27,7 @@ public:
   update(float deltaTime);
 
   void
-  render();
+  render(RTSTiledMap* tiledMap);
 
   void
   setPosition(float x, float y);

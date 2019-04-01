@@ -2,7 +2,6 @@
 #include "RTSTiledMap.h"
 
 #include "RTSUnitType.h"
-#include "RTSUnit.h"
 #include "RTSTexture.h"
 #include "BestFirstSearch.h"
 #include "DepthFirstSearch.h"
@@ -11,6 +10,7 @@
 #include "AStar.h"
 #include "GridWalker.h"
 
+namespace RTSGame{
 RTSWorld::RTSWorld() {
   m_pTiledMap = nullptr;
   m_activeWalkerIndex = -1;	//-1 = Invalid index
@@ -40,7 +40,8 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   m_walkersList.push_back(ge_new<AStar>(m_pTiledMap));
 
   //Init the walker objects
-  for (auto & it : m_walkersList) {
+  for(auto & it : m_walkersList)
+  {
     it->Init();
     it->setStartPosition(0, 0);
     it->setEndPosition(0, 0);
@@ -48,9 +49,9 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 
   //Set the first walker as the active walker
   setCurrentWalker(!m_walkersList.empty() ? 0 : -1);
- 
-  getUnitTexture(std::make_shared<RTSTexture>());
-  getUnitTexture()->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
+
+  m_unitTexture = std::make_shared<RTSTexture>() ;
+  m_unitTexture->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
 
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
@@ -68,14 +69,16 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
 
 void
 RTSWorld::destroy() {
- //Destroy all the walkers
-  while (!m_walkersList.empty()) {
+  //Destroy all the walkers
+  while(!m_walkersList.empty())
+  {
     ge_delete(m_walkersList.back());
     m_walkersList.pop_back();
   }
 
   //As the last step, destroy the full map
-  if (nullptr != m_pTiledMap) {
+  if(nullptr != m_pTiledMap)
+  {
     ge_delete(m_pTiledMap);
     m_pTiledMap = nullptr;
   }
@@ -98,21 +101,21 @@ void
 RTSWorld::update(float deltaTime) {
   m_pTiledMap->update(deltaTime);
 
-  if (m_activeWalker->GetState() == WALKSTATE::STILLLOOKING) 
+  if(m_activeWalker->GetState() == WALKSTATE::STILLLOOKING)
   {
     m_activeWalker->Update();
   }
 
-  else if (m_activeWalker->GetState() == WALKSTATE::REACHEDGOAL)
+  else if(m_activeWalker->GetState() == WALKSTATE::REACHEDGOAL)
   {
-    if (m_path.empty())
+    if(m_path.empty())
     {
       m_path = m_activeWalker->BackTracing();
       m_drawPath.resize(m_path.size());
     }
 
     int32  x, y;
-    for (int32 i = 0; i < m_path.size(); ++i)
+    for(int32 i = 0; i < m_path.size(); ++i)
     {
       m_pTiledMap->getMapToScreenCoords(m_path[i].x, m_path[i].y, x, y);
       sf::Vertex v(sf::Vector2f(x + (TILESIZE_X >> 1), y + (TILESIZE_Y >> 1)), sf::Color::White);
@@ -120,7 +123,7 @@ RTSWorld::update(float deltaTime) {
     }
   }
 
-  for (auto & it : m_lstUnits)
+  for(auto & it : m_lstUnits)
   {
     it->update(deltaTime);
   }
@@ -131,25 +134,26 @@ void
 RTSWorld::render() {
   m_pTiledMap->render();
   m_activeWalker->Render();
-  if (!m_path.empty())
+  if(!m_path.empty())
   {
     m_pTarget->draw(m_drawPath);
   }
 
   for(auto & it : m_lstUnits)
   {
-    it->render();
+    it->render(m_pTiledMap);
   }
 }
 
 void
 RTSWorld::updateResolutionData() {
-  if (nullptr != m_pTiledMap) {
+  if(nullptr != m_pTiledMap)
+  {
     Vector2I appResolution = g_gameOptions().s_Resolution;
-    
+
     m_pTiledMap->setStart(0, 0);
     m_pTiledMap->setEnd(appResolution.x, appResolution.y - 175);
-    
+
     //This ensures a clamp if necessary
     m_pTiledMap->moveCamera(0, 0);
   }
@@ -166,28 +170,30 @@ RTSWorld::setCurrentWalker(const int8 index) {
 
 void RTSWorld::ResetWalker()
 {//TODO: Mejorar esto
-  for (auto & it : m_walkersList)
+  for(auto & it : m_walkersList)
   {
     it->Reset();
   }
   m_path.clear();
 }
 
-void 
+void
 RTSWorld::SetStartPos(const int32 x, const int32 y)
 {
   //Init the walker objects
-  for (auto & it : m_walkersList) {
+  for(auto & it : m_walkersList)
+  {
     it->setStartPosition(x, y);
   }
   /*m_activeWalker->setStartPosition(x, y);*/
 }
 
-void 
+void
 RTSWorld::SetEndPos(const int32 x, const int32 y)
 {
   //Init the walker objects
-  for (auto & it : m_walkersList) {
+  for(auto & it : m_walkersList)
+  {
     it->setEndPosition(x, y);
   }
   /*m_activeWalker->setEndPosition(x, y);*/
@@ -197,4 +203,15 @@ void
 RTSWorld::addUnit(RTSGame::RTSUnit* unit)
 {
   m_lstUnits.push_back(unit);
+}
+
+void
+RTSWorld::createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY)
+{
+  auto* unit = ge_new<RTSUnit>(m_unitTexture, 
+                               m_lstUnitTypes[unitType]->getAnimation());
+  unit->setPosition(posX, posY);
+  m_lstUnits.push_back(unit);
+}
+
 }

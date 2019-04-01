@@ -27,13 +27,17 @@ RTSUnit::update(float deltaTime)
 /*
 */
 void
-RTSUnit::render()
+RTSUnit::render(RTSTiledMap* tiledMap)
 {
-  m_texture->setPosition(m_position.x, m_position.y);
 
   float frameTime = m_animation[m_state].duration / m_animation[m_state].numFrames;
   AnimationFrame& currentFrame = m_animation[m_state].frames[m_direction][m_frameCount];
   m_texture->setSrcRect(currentFrame.x, currentFrame.y, currentFrame.w, currentFrame.h);
+
+  int32 x, y;
+  tiledMap->getMapToScreenCoords(m_position.x, m_position.y, x, y);
+  m_texture->setPosition(x + (TILESIZE_X / 4),
+                         y - currentFrame.h / 2);
 
   if(m_elapsedTime > frameTime)
   {

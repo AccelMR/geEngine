@@ -6,26 +6,27 @@
 using namespace geEngineSDK;
 
 namespace sf{
-  class RenderWindow;
-  class Font;
+class RenderWindow;
+class Font;
 }
 
+namespace RTSGame{
 class RTSApplication
 {
- public:
+public:
   RTSApplication();
   virtual ~RTSApplication();
 
   int32
-  run();
+    run();
 
   sf::RenderWindow*
-  getRenderWindow() {
+    getRenderWindow() {
     return m_window;
   }
 
   RTSWorld*
-  getWorld() {
+    getWorld() {
     return &m_gameWorld;
   }
 
@@ -33,39 +34,40 @@ class RTSApplication
     return m_framesPerSecond;
   }
 
- protected:
+protected:
 
- private:
-   void
-   initSystems();
+private:
+  void
+    initSystems();
 
-   void
-   initGUI();
+  void
+    initGUI();
 
-   void
-   destroySystems();
+  void
+    destroySystems();
 
-   void
-   gameLoop();
+  void
+    gameLoop();
 
-   void
-   postInit();
+  void
+    postInit();
 
-   void
-   postDestroy();
+  void
+    postDestroy();
 
-   void
-   updateFrame();
-   
-   void
-   renderFrame();
+  void
+    updateFrame();
 
- private:
-   sf::RenderWindow* m_window;
-   sf::Font* m_arialFont;
-   RTSWorld m_gameWorld;
+  void
+    renderFrame();
 
-   float m_fpsTimer;
-   float m_fpsCounter;
-   float m_framesPerSecond;
+private:
+  sf::RenderWindow* m_window;
+  sf::Font* m_arialFont;
+  RTSWorld m_gameWorld;
+
+  float m_fpsTimer;
+  float m_fpsCounter;
+  float m_framesPerSecond;
 };
+}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GridWalker.h"
-
+namespace RTSGame{
 class Dijkstra :
   public GridWalker
 {
@@ -13,36 +13,40 @@ public:
 
 
   bool
-  Init() override;
+    Init() override;
 
 
-  void 
-  Destroy() override;
+  void
+    Destroy() override;
 
 
   WALKSTATE::E Update() override;
 
 
-  void 
-  Render() override;
-
-
-  void 
-  Reset() override;
-
-
-  bool 
-  weightedGraphSupported() { return false; }
-
-
-  bool 
-  heuristicsSupported() { return false; };
-  
   void
-  Dijkstra::PriorityQueue(Vector2I& v);
+    Render() override;
 
-  Vector<Vector2I> 
-  BackTracing();
+
+  void
+    Reset() override;
+
+
+  bool
+    weightedGraphSupported() {
+    return false;
+  }
+
+
+  bool
+    heuristicsSupported() {
+    return false;
+  };
+
+  void
+    Dijkstra::PriorityQueue(Vector2I& v);
+
+  Vector<Vector2I>
+    BackTracing();
 
 private:
   struct NodeListD
@@ -50,7 +54,7 @@ private:
     Vector2I position;
     Vector2I parent;
     uint32 weight;
-  
+
   };
 
   List<NodeListD> m_open;
@@ -59,7 +63,7 @@ private:
   /*RTSTiledMap *m_start, *m_end, *m_use;*/
   RTSTiledMap *m_nodeGrid; //Same size as map grid
   Vector<Vector2I> m_endAdjacent;
-  
+
   sf::RenderTarget* m_render;
   sf::Font* m_arialFont;
 
@@ -67,3 +71,4 @@ protected:
   virtual void visitGridNode(int32 x, int32 y) override;
 
 };
+}

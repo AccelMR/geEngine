@@ -3,17 +3,19 @@
 #include <geException.h>
 
 using namespace geEngineSDK;
-
+namespace RTSGame{
 RTSTexture::RTSTexture()
   : m_texture(nullptr),
-    m_sprite(nullptr)
+  m_sprite(nullptr)
 {}
 
 RTSTexture::~RTSTexture() {
-  if (nullptr != m_texture) {
+  if(nullptr != m_texture)
+  {
     ge_delete(m_texture);
   }
-  if (nullptr != m_sprite) {
+  if(nullptr != m_sprite)
+  {
     ge_delete(m_sprite);
   }
 }
@@ -33,10 +35,12 @@ RTSTexture::loadFromFile(sf::RenderTarget* pTarget, const String& fileName) {
 
   m_texture = ge_new<sf::Texture>();
   m_sprite = ge_new<sf::Sprite>();
-  
-  if (!m_texture->loadFromFile(fileName.c_str())) {
+
+  if(!m_texture->loadFromFile(fileName.c_str()))
+  {
     GE_EXCEPT(FileNotFoundException, "Texture not found: " + fileName);
   }
-  
+
   m_pTarget = pTarget;
+}
 }

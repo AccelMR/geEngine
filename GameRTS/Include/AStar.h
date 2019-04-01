@@ -2,6 +2,7 @@
 
 #include "GridWalker.h"
 
+namespace RTSGame{
 class sf::RenderTarget;
 
 class AStar :
@@ -34,11 +35,15 @@ public:
 
 
   bool
-    weightedGraphSupported() { return false; }
+    weightedGraphSupported() {
+    return false;
+  }
 
 
   bool
-    heuristicsSupported() { return false; };
+    heuristicsSupported() {
+    return false;
+  };
 
   void
     AStar::PriorityQueue(Vector2I& v);
@@ -66,3 +71,4 @@ protected:
   virtual void visitGridNode(int32 x, int32 y) override;
 
 };
+}
