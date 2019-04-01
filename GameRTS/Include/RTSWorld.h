@@ -63,6 +63,9 @@ public:
 
   void
   createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY);
+  
+  void
+  clearUnits();
 
   geEngineSDK::SPtr<RTSTexture> 
   getUnitTexture() const {

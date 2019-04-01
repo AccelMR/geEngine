@@ -84,7 +84,6 @@ namespace RTSGame {
      }
 
 
-
    private:
      uint32 m_id;
      String m_name;

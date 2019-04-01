@@ -530,6 +530,11 @@ mainMenu(RTSApplication* pApp) {
                            &g_iUnitType,
                            static_cast<RTSGame::UNIT_TYPE::E> (i));
       }
+
+      if(ImGui::Button("Clear units", { 200, 50 }))
+      {
+        pApp->getWorld()->clearUnits();
+      }
     }
     ImGui::End();
   }

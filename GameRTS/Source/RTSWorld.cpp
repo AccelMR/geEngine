@@ -214,4 +214,14 @@ RTSWorld::createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY)
   m_lstUnits.push_back(unit);
 }
 
+void
+RTSWorld::clearUnits()
+{
+  for (auto& it : m_lstUnits)
+  {
+    ge_delete(it);
+  }
+  m_lstUnits.clear();
+}
+
 }
