@@ -165,21 +165,25 @@ RTSApplication::gameLoop() {
              !ImGui::IsMouseHoveringAnyWindow() &&
              !ImGui::IsAnyItemHovered())
           {
-            switch(g_iUnitType)
+            if (GameOptions::s_IsUnitMenuActive)
             {
-            case RTSGame::UNIT_TYPE::kARCHER:
-              m_gameWorld.createUnit(UNIT_TYPE::kARCHER, tileX, tileY);
-              break;
-            case RTSGame::UNIT_TYPE::kKNIGHT :
-              m_gameWorld.createUnit(UNIT_TYPE::kKNIGHT, tileX, tileY);
-              break;
-            case RTSGame::UNIT_TYPE::kCROSSBOW:
-              m_gameWorld.createUnit(UNIT_TYPE::kCROSSBOW, tileX, tileY);
-              break;
+              switch(g_iUnitType)
+              {
+              case RTSGame::UNIT_TYPE::kARCHER:
+                m_gameWorld.createUnit(UNIT_TYPE::kARCHER, tileX, tileY);
+                break;
+              case RTSGame::UNIT_TYPE::kKNIGHT:
+                m_gameWorld.createUnit(UNIT_TYPE::kKNIGHT, tileX, tileY);
+                break;
+              case RTSGame::UNIT_TYPE::kCROSSBOW:
+                m_gameWorld.createUnit(UNIT_TYPE::kCROSSBOW, tileX, tileY);
+                break;
 
-            default:
-              break;
+              default:
+                break;
+              }
             }
+
           }
 
         }
@@ -234,42 +238,44 @@ RTSApplication::updateFrame() {
   sf::Vector2i mousePos = sf::Mouse::getPosition();
   map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
 
-  //Terrain editor
-  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
-     GameOptions::s_IsEditorActive &&
+  if(!ImGui::IsAnyItemFocused() &&
      !ImGui::IsMouseHoveringAnyWindow() &&
      !ImGui::IsAnyItemHovered())
   {
-
-    for(SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++)
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
-      for(SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++)
+      //Terrain editor
+      if(GameOptions::s_IsEditorActive)
       {
-        map->setType(tileX + i, tileY + j, g_iTerrainSelected);
-        map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
+
+        for(SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++)
+        {
+          for(SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++)
+          {
+            map->setType(tileX + i, tileY + j, g_iTerrainSelected);
+            map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
+          }
+        }
       }
+
+      //Path finder Menu
+      if(GameOptions::s_IsPathMenuActive)
+      {
+
+        map->setMark(tileX, tileY, g_iStartSelection);
+
+        if(g_iStartSelection == PFMARK::START)
+        {
+          m_gameWorld.SetStartPos(tileX, tileY);
+        }
+        if(g_iStartSelection == PFMARK::END)
+        {
+          m_gameWorld.SetEndPos(tileX, tileY);
+        }
+      }
+
     }
   }
-
-  //Path finder Menu
-  if(sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
-     GameOptions::s_IsPathMenuActive &&
-     !ImGui::IsMouseHoveringAnyWindow() &&
-     !ImGui::IsAnyItemHovered())
-  {
-
-    map->setMark(tileX, tileY, g_iStartSelection);
-
-    if(g_iStartSelection == PFMARK::START)
-    {
-      m_gameWorld.SetStartPos(tileX, tileY);
-    }
-    if(g_iStartSelection == PFMARK::END)
-    {
-      m_gameWorld.SetEndPos(tileX, tileY);
-    }
-  }
-
 
   if(0 == mousePosition.x ||
      sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
