@@ -128,6 +128,7 @@ RTSApplication::destroySystems() {
   {
     ge_delete(m_arialFont);
   }
+  ge_delete(m_cursorTexture);
 }
 
 void
@@ -139,6 +140,13 @@ RTSApplication::gameLoop() {
 
   postInit();
 
+  // Load image and create sprite
+  m_cursorTexture = ge_new<RTSTexture>();
+  m_cursorTexture->loadFromFile(m_window, "Textures/GUI/hand.png");
+  m_cursorTexture->setScale(.30, .30);
+  m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 3.f,
+                             m_cursorTexture->getHeight() / 6.f);
+
   while(m_window->isOpen())
   {
 
@@ -147,6 +155,7 @@ RTSApplication::gameLoop() {
     sf::Vector2i mousePos = sf::Mouse::getPosition();
     map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
     sf::Event event;
+
 
     while(m_window->pollEvent(event))
     {
@@ -333,6 +342,19 @@ RTSApplication::renderFrame() {
   m_gameWorld.render();
 
   ImGui::SFML::Render(*m_window);
+
+  if (GameOptions::s_IsPlayActive)
+  {
+    Vector2I mousePosition;
+    mousePosition.x = sf::Mouse::getPosition(*m_window).x;
+    mousePosition.y = sf::Mouse::getPosition(*m_window).y;
+    m_cursorTexture->setPosition(mousePosition);
+    m_cursorTexture->draw();
+  }
+  else
+  {
+    m_window->setMouseCursorVisible(true); // Hide cursor
+  }
 
   //     sf::Text text;
   //     text.setPosition(0.f, 30.f);
@@ -530,11 +552,23 @@ mainMenu(RTSApplication* pApp) {
                            &g_iUnitType,
                            static_cast<RTSGame::UNIT_TYPE::E> (i));
       }
-
-      if(ImGui::Button("Clear units", { 200, 50 }))
+      
+      ImGui::Spacing();
+      ImGui::Spacing();
+      if(ImGui::Button("Clear units", { 100, 50 }))
       {
         pApp->getWorld()->clearUnits();
       }
+
+      ImGui::Separator();
+      ImGui::Spacing();
+      ImGui::Spacing();
+
+      if (ImGui::Checkbox("Interact with Units", &GameOptions::s_IsPlayActive))
+      {
+        pApp->getRenderWindow()->setMouseCursorVisible(false); // Hide cursor
+      }
+
     }
     ImGui::End();
   }

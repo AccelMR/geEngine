@@ -61,10 +61,14 @@ private:
   void
     renderFrame();
 
+
 private:
   sf::RenderWindow* m_window;
   sf::Font* m_arialFont;
   RTSWorld m_gameWorld;
+
+  RTSTexture*  m_cursorTexture;
+  /*sf::Sprite    m_cursorSprite;*/
 
   float m_fpsTimer;
   float m_fpsCounter;

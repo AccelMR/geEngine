@@ -38,7 +38,11 @@ class GameOptions : public Module<GameOptions>
   //Terrain
   static bool s_IsEditorActive;
   static bool s_IsPathMenuActive;
+
+  //Unit
   static bool s_IsUnitMenuActive;
+  static bool s_IsPlayActive;
+
   static int s_SizeOfBrush;
 
   //Path finders

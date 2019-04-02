@@ -10,6 +10,7 @@ bool GameOptions::s_EndPos = false;
 bool GameOptions::s_IsEditorActive = false;
 bool GameOptions::s_IsPathMenuActive = false;
 bool GameOptions::s_IsUnitMenuActive = false;
+bool GameOptions::s_IsPlayActive = false;
 int  GameOptions::s_SizeOfBrush = 1;
 
 int  GameOptions::s_PathFinderSelected = 0;
