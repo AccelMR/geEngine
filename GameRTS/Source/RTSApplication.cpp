@@ -45,7 +45,8 @@ RTSApplication::RTSApplication()
   : m_window(nullptr),
   m_fpsTimer(0.0f),
   m_fpsCounter(0.0f),
-  m_framesPerSecond(0.0f)
+  m_framesPerSecond(0.0f),
+  m_startArea(false)
 {}
 
 RTSApplication::~RTSApplication() {}
@@ -128,6 +129,7 @@ RTSApplication::destroySystems() {
   {
     ge_delete(m_arialFont);
   }
+  ge_delete(m_cursorTexture);
 }
 
 void
@@ -139,6 +141,18 @@ RTSApplication::gameLoop() {
 
   postInit();
 
+  // Load image and create sprite
+  m_cursorTexture = ge_new<RTSTexture>();
+  m_cursorTexture->loadFromFile(m_window, "Textures/GUI/hand.png");
+  m_cursorTexture->setScale(.10, .10);
+  m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 8.f,
+                             m_cursorTexture->getHeight() / 15.f);
+
+  if (!m_music.openFromFile("Music/song.ogg"))
+  {
+    return;
+  }
+
   while(m_window->isOpen())
   {
 
@@ -147,6 +161,7 @@ RTSApplication::gameLoop() {
     sf::Vector2i mousePos = sf::Mouse::getPosition();
     map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
     sf::Event event;
+
 
     while(m_window->pollEvent(event))
     {
@@ -184,11 +199,25 @@ RTSApplication::gameLoop() {
               }
             }
 
+            if (GameOptions::s_IsPlayActive)
+            {
+              m_startArea = true;
+              m_mouseClick.x = tileX;
+              m_mouseClick.y = tileY;
+            }
           }
 
         }
         break;
 
+      case sf::Event::MouseButtonReleased:
+        if (GameOptions::s_IsPlayActive)
+        {
+          m_startArea = false;
+          m_mouseRelease.x = tileX;
+          m_mouseRelease.y = tileY;
+        }
+        break;
 
       default:
         break;
@@ -333,6 +362,44 @@ RTSApplication::renderFrame() {
   m_gameWorld.render();
 
   ImGui::SFML::Render(*m_window);
+
+  if (GameOptions::s_IsPlayActive)
+  {
+    Vector2I mousePosition;
+    mousePosition.x = sf::Mouse::getPosition(*m_window).x;
+    mousePosition.y = sf::Mouse::getPosition(*m_window).y;
+    m_cursorTexture->setPosition(mousePosition);
+    m_cursorTexture->draw();
+  }
+
+
+  if (m_startArea)
+  {
+    int32 x, y;
+    m_gameWorld.getTiledMap()->
+      getMapToScreenCoords(m_mouseClick.x, m_mouseClick.y, x, y);
+
+    int32 x1, y1;
+    x1 = sf::Mouse::getPosition(*m_window).x;
+    y1 = sf::Mouse::getPosition(*m_window).y;
+    
+    int32 sizeX = x1 - x;
+    int32 sizeY = y1 - y;
+
+    if ((sizeX > 50 && sizeY > 50) ||
+        (sizeX < -50 && sizeY < -50))
+    {
+      sf::RectangleShape rectangle(sf::Vector2f(sizeX, sizeY));
+      rectangle.setFillColor(sf::Color::Transparent);
+      rectangle.setOutlineThickness(1);
+      rectangle.setPosition(x + TILESIZE_X / 2, y + TILESIZE_Y / 2);
+      m_window->draw(rectangle);
+    }    
+  }
+//   else
+//   {
+//     m_window->setMouseCursorVisible(true); // Hide cursor
+//   }
 
   //     sf::Text text;
   //     text.setPosition(0.f, 30.f);
@@ -521,6 +588,7 @@ mainMenu(RTSApplication* pApp) {
 
   if(GameOptions::s_IsUnitMenuActive)
   {
+    GameOptions::s_IsPlayActive = false;
     // Editor
     ImGui::Begin("Editor");
     {
@@ -528,16 +596,52 @@ mainMenu(RTSApplication* pApp) {
       {
         ImGui::RadioButton(RTSGame::UNIT_TYPE::unitType[i].c_str(),
                            &g_iUnitType,
-                           static_cast<RTSGame::UNIT_TYPE::E> (i));
+                           static_cast<UNIT_TYPE::E> (i));
       }
+      
+      ImGui::Spacing();
+      ImGui::Spacing();
 
-      if(ImGui::Button("Clear units", { 200, 50 }))
+      if(ImGui::Button("Clear units", { 100, 50 }))
       {
         pApp->getWorld()->clearUnits();
+      } ImGui::SameLine();
+
+      if (ImGui::Button("Play", { 100, 50 }))
+      {
+        GameOptions::s_IsPlayActive = true;
+        pApp->getRenderWindow()->setMouseCursorVisible(false); // Hide cursor
+        g_iUnitType = -1;
+        pApp->startMusic();
+        pApp->setVolume(GameOptions::s_volume);
       }
+
     }
     ImGui::End();
   }
 
+  if (GameOptions::s_IsPlayActive)
+  {
+    GameOptions::s_IsUnitMenuActive = false;
+    ImGui::Begin("Play");
+    {
+      if (ImGui::SliderInt("Volume",
+                           &GameOptions::s_volume,
+                           0,
+                           100))
+      {
+        pApp->setVolume(GameOptions::s_volume);
+      }
+      ImGui::Separator();
+      ImGui::Spacing();
+      if (ImGui::Button("unPlay", { 100, 50 }))
+      {
+        GameOptions::s_IsUnitMenuActive = true;
+        pApp->getRenderWindow()->setMouseCursorVisible(true); // Hide cursor
+        pApp->pauseMusic();
+      }
+    }
+    ImGui::End();
+  }
 }
 }

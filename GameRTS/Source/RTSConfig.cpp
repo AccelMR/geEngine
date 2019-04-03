@@ -3,6 +3,8 @@
 Vector2I GameOptions::s_Resolution = Vector2I(1920 , 1080);
 Vector2 GameOptions::s_MapMovementSpeed = Vector2(1024.0f, 1024.0f);
 
+int32 GameOptions::s_volume = 5;
+
 bool GameOptions::s_MapShowGrid = false;
 bool GameOptions::s_StartPos = false;
 bool GameOptions::s_EndPos = false;
@@ -10,6 +12,7 @@ bool GameOptions::s_EndPos = false;
 bool GameOptions::s_IsEditorActive = false;
 bool GameOptions::s_IsPathMenuActive = false;
 bool GameOptions::s_IsUnitMenuActive = false;
+bool GameOptions::s_IsPlayActive = false;
 int  GameOptions::s_SizeOfBrush = 1;
 
 int  GameOptions::s_PathFinderSelected = 0;

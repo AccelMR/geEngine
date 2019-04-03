@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio/Music.hpp>
 #include "RTSTexture.h"
 #include "RTSWorld.h"
 
@@ -34,6 +35,21 @@ public:
     return m_framesPerSecond;
   }
 
+  void
+    startMusic() {
+    m_music.play();
+  }
+
+  void
+    pauseMusic() {
+    m_music.pause();
+  }
+
+  void 
+    setVolume(int vol){
+    m_music.setVolume(vol);
+  }
+
 protected:
 
 private:
@@ -61,10 +77,23 @@ private:
   void
     renderFrame();
 
+
+
+
 private:
   sf::RenderWindow* m_window;
   sf::Font* m_arialFont;
   RTSWorld m_gameWorld;
+
+  RTSTexture*  m_cursorTexture;
+  /*sf::Sprite    m_cursorSprite;*/
+
+  
+  Vector2 m_mouseClick;
+  Vector2 m_mouseRelease;
+  bool    m_startArea;
+
+  sf::Music m_music;
 
   float m_fpsTimer;
   float m_fpsCounter;

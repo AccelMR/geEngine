@@ -27,6 +27,9 @@ class GameOptions : public Module<GameOptions>
   static Vector2I s_Resolution;
   static Vector2 s_MapMovementSpeed;
 
+  //Audio
+  static int32 s_volume;
+
   //World Values
 
   //Map Values
@@ -38,7 +41,11 @@ class GameOptions : public Module<GameOptions>
   //Terrain
   static bool s_IsEditorActive;
   static bool s_IsPathMenuActive;
+
+  //Unit
   static bool s_IsUnitMenuActive;
+  static bool s_IsPlayActive;
+
   static int s_SizeOfBrush;
 
   //Path finders
