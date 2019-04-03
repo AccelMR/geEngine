@@ -248,9 +248,9 @@ RTSApplication::updateFrame() {
       if(GameOptions::s_IsEditorActive)
       {
 
-        for(SIZE_T i = 0; i < GameOptions::s_SizeOfBrush; i++)
+        for(uint32 i = 0; i < GameOptions::s_SizeOfBrush; i++)
         {
-          for(SIZE_T j = 0; j < GameOptions::s_SizeOfBrush; j++)
+          for(uint32 j = 0; j < GameOptions::s_SizeOfBrush; j++)
           {
             map->setType(tileX + i, tileY + j, g_iTerrainSelected);
             map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
@@ -472,7 +472,7 @@ mainMenu(RTSApplication* pApp) {
       ImGui::Text("Terrain Texture");
 
 
-      for(SIZE_T i = 0; i < TERRAIN_TYPE::kNumObjects; i++)
+      for(uint32 i = 0; i < TERRAIN_TYPE::kNumObjects; i++)
       {
         ImGui::RadioButton(TERRAIN_TYPE::ES[i].c_str(),
                            &g_iTerrainSelected,
@@ -501,7 +501,7 @@ mainMenu(RTSApplication* pApp) {
       ImGui::Text("Path Finder");
       /*ImGui::Spacing(3);*/
 
-      for(SIZE_T i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++)
+      for(uint32 i = 0; i < TYPE_PATH_FINDER::NUMBOJ; i++)
       {
         ImGui::RadioButton(TYPE_PATH_FINDER::ES[i].c_str(),
                            &g_iPathFinders,
@@ -524,7 +524,7 @@ mainMenu(RTSApplication* pApp) {
     // Editor
     ImGui::Begin("Editor");
     {
-      for(SIZE_T i = 0; i < RTSGame::UNIT_TYPE::kNUMOBJ; i++)
+      for(uint32 i = 0; i < RTSGame::UNIT_TYPE::kNUMOBJ; i++)
       {
         ImGui::RadioButton(RTSGame::UNIT_TYPE::unitType[i].c_str(),
                            &g_iUnitType,
