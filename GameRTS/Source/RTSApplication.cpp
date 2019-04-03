@@ -351,10 +351,10 @@ RTSApplication::renderFrame() {
     m_cursorTexture->setPosition(mousePosition);
     m_cursorTexture->draw();
   }
-  else
-  {
-    m_window->setMouseCursorVisible(true); // Hide cursor
-  }
+//   else
+//   {
+//     m_window->setMouseCursorVisible(true); // Hide cursor
+//   }
 
   //     sf::Text text;
   //     text.setPosition(0.f, 30.f);
@@ -543,6 +543,7 @@ mainMenu(RTSApplication* pApp) {
 
   if(GameOptions::s_IsUnitMenuActive)
   {
+    GameOptions::s_IsPlayActive = false;
     // Editor
     ImGui::Begin("Editor");
     {
@@ -550,28 +551,40 @@ mainMenu(RTSApplication* pApp) {
       {
         ImGui::RadioButton(RTSGame::UNIT_TYPE::unitType[i].c_str(),
                            &g_iUnitType,
-                           static_cast<RTSGame::UNIT_TYPE::E> (i));
+                           static_cast<UNIT_TYPE::E> (i));
       }
       
       ImGui::Spacing();
       ImGui::Spacing();
+
       if(ImGui::Button("Clear units", { 100, 50 }))
       {
         pApp->getWorld()->clearUnits();
-      }
+      } ImGui::SameLine();
 
-      ImGui::Separator();
-      ImGui::Spacing();
-      ImGui::Spacing();
-
-      if (ImGui::Checkbox("Interact with Units", &GameOptions::s_IsPlayActive))
+      if (ImGui::Button("Play", { 100, 50 }))
       {
+        GameOptions::s_IsPlayActive = true;
         pApp->getRenderWindow()->setMouseCursorVisible(false); // Hide cursor
+        g_iUnitType = -1;
       }
 
     }
     ImGui::End();
   }
 
+  if (GameOptions::s_IsPlayActive)
+  {
+    GameOptions::s_IsUnitMenuActive = false;
+    ImGui::Begin("Play");
+    {
+      if (ImGui::Button("unPlay", { 100, 50 }))
+      {
+        GameOptions::s_IsUnitMenuActive = true;
+        pApp->getRenderWindow()->setMouseCursorVisible(true); // Hide cursor
+      }
+    }
+    ImGui::End();
+  }
 }
 }
