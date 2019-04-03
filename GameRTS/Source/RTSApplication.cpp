@@ -45,7 +45,8 @@ RTSApplication::RTSApplication()
   : m_window(nullptr),
   m_fpsTimer(0.0f),
   m_fpsCounter(0.0f),
-  m_framesPerSecond(0.0f)
+  m_framesPerSecond(0.0f),
+  m_startArea(false)
 {}
 
 RTSApplication::~RTSApplication() {}
@@ -143,9 +144,9 @@ RTSApplication::gameLoop() {
   // Load image and create sprite
   m_cursorTexture = ge_new<RTSTexture>();
   m_cursorTexture->loadFromFile(m_window, "Textures/GUI/hand.png");
-  m_cursorTexture->setScale(.30, .30);
-  m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 3.f,
-                             m_cursorTexture->getHeight() / 6.f);
+  m_cursorTexture->setScale(.10, .10);
+  m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 8.f,
+                             m_cursorTexture->getHeight() / 15.f);
 
   while(m_window->isOpen())
   {
@@ -193,11 +194,25 @@ RTSApplication::gameLoop() {
               }
             }
 
+            if (GameOptions::s_IsPlayActive)
+            {
+              m_startArea = true;
+              m_mouseClick.x = tileX;
+              m_mouseClick.y = tileY;
+            }
           }
 
         }
         break;
 
+      case sf::Event::MouseButtonReleased:
+        if (GameOptions::s_IsPlayActive)
+        {
+          m_startArea = false;
+          m_mouseRelease.x = tileX;
+          m_mouseRelease.y = tileY;
+        }
+        break;
 
       default:
         break;
@@ -350,6 +365,31 @@ RTSApplication::renderFrame() {
     mousePosition.y = sf::Mouse::getPosition(*m_window).y;
     m_cursorTexture->setPosition(mousePosition);
     m_cursorTexture->draw();
+  }
+
+
+  if (m_startArea)
+  {
+    int32 x, y;
+    m_gameWorld.getTiledMap()->
+      getMapToScreenCoords(m_mouseClick.x, m_mouseClick.y, x, y);
+
+    int32 x1, y1;
+    x1 = sf::Mouse::getPosition(*m_window).x;
+    y1 = sf::Mouse::getPosition(*m_window).y;
+    
+    int32 sizeX = x1 - x;
+    int32 sizeY = y1 - y;
+
+    if ((sizeX > 50 && sizeY > 50) ||
+        (sizeX < -50 && sizeY < -50))
+    {
+      sf::RectangleShape rectangle(sf::Vector2f(sizeX, sizeY));
+      rectangle.setFillColor(sf::Color::Transparent);
+      rectangle.setOutlineThickness(1);
+      rectangle.setPosition(x + TILESIZE_X / 2, y + TILESIZE_Y / 2);
+      m_window->draw(rectangle);
+    }    
   }
 //   else
 //   {

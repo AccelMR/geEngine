@@ -70,6 +70,11 @@ private:
   RTSTexture*  m_cursorTexture;
   /*sf::Sprite    m_cursorSprite;*/
 
+  
+  Vector2 m_mouseClick;
+  Vector2 m_mouseRelease;
+  bool    m_startArea;
+
   float m_fpsTimer;
   float m_fpsCounter;
   float m_framesPerSecond;
