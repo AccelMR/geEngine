@@ -27,6 +27,9 @@ class GameOptions : public Module<GameOptions>
   static Vector2I s_Resolution;
   static Vector2 s_MapMovementSpeed;
 
+  //Audio
+  static int32 s_volume;
+
   //World Values
 
   //Map Values

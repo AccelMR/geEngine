@@ -148,6 +148,11 @@ RTSApplication::gameLoop() {
   m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 8.f,
                              m_cursorTexture->getHeight() / 15.f);
 
+  if (!m_music.openFromFile("Music/song.ogg"))
+  {
+    return;
+  }
+
   while(m_window->isOpen())
   {
 
@@ -607,6 +612,8 @@ mainMenu(RTSApplication* pApp) {
         GameOptions::s_IsPlayActive = true;
         pApp->getRenderWindow()->setMouseCursorVisible(false); // Hide cursor
         g_iUnitType = -1;
+        pApp->startMusic();
+        pApp->setVolume(GameOptions::s_volume);
       }
 
     }
@@ -618,10 +625,20 @@ mainMenu(RTSApplication* pApp) {
     GameOptions::s_IsUnitMenuActive = false;
     ImGui::Begin("Play");
     {
+      if (ImGui::SliderInt("Volume",
+                           &GameOptions::s_volume,
+                           0,
+                           100))
+      {
+        pApp->setVolume(GameOptions::s_volume);
+      }
+      ImGui::Separator();
+      ImGui::Spacing();
       if (ImGui::Button("unPlay", { 100, 50 }))
       {
         GameOptions::s_IsUnitMenuActive = true;
         pApp->getRenderWindow()->setMouseCursorVisible(true); // Hide cursor
+        pApp->pauseMusic();
       }
     }
     ImGui::End();
