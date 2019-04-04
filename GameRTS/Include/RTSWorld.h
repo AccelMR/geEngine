@@ -72,12 +72,21 @@ public:
     return m_unitTexture;
   }
 
+  void fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn);
+
+  void 
+  resetSelected();
+
  private:
   RTSTiledMap* m_pTiledMap;
 
   SPtr<RTSTexture> m_unitTexture;
+  SPtr<RTSTexture> m_selectedTex; //circle that says if unit was selected
+
   Vector<RTSGame::RTSUnitType*> m_lstUnitTypes;
   Vector<RTSGame::RTSUnit*> m_lstUnits;
+
+  Vector<RTSUnit*> m_selectedUnits;
 
   Vector<Vector2I> m_path;
   sf::VertexArray m_drawPath;

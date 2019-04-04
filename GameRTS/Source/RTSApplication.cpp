@@ -176,6 +176,7 @@ RTSApplication::gameLoop() {
       case sf::Event::MouseButtonPressed:
         if(event.mouseButton.button == sf::Mouse::Left)
         {
+          m_gameWorld.resetSelected();
           if(!ImGui::IsAnyItemFocused() &&
              !ImGui::IsMouseHoveringAnyWindow() &&
              !ImGui::IsAnyItemHovered())
@@ -202,8 +203,8 @@ RTSApplication::gameLoop() {
             if (GameOptions::s_IsPlayActive)
             {
               m_startArea = true;
-              m_mouseClick.x = tileX;
-              m_mouseClick.y = tileY;
+              m_mouseMapClick.x = tileX;
+              m_mouseMapClick.y = tileY;
             }
           }
 
@@ -213,9 +214,14 @@ RTSApplication::gameLoop() {
       case sf::Event::MouseButtonReleased:
         if (GameOptions::s_IsPlayActive)
         {
-          m_startArea = false;
-          m_mouseRelease.x = tileX;
-          m_mouseRelease.y = tileY;
+          if (!ImGui::IsAnyItemFocused() &&
+              !ImGui::IsMouseHoveringAnyWindow() &&
+              !ImGui::IsAnyItemHovered())
+          {
+            m_startArea = false;
+            m_mouseRelease.x = tileX;
+            m_mouseRelease.y = tileY;
+          }
         }
         break;
 
@@ -365,49 +371,40 @@ RTSApplication::renderFrame() {
 
   if (GameOptions::s_IsPlayActive)
   {
-    Vector2I mousePosition;
+    Vector2 mousePosition;
     mousePosition.x = sf::Mouse::getPosition(*m_window).x;
     mousePosition.y = sf::Mouse::getPosition(*m_window).y;
     m_cursorTexture->setPosition(mousePosition);
     m_cursorTexture->draw();
-  }
 
-
-  if (m_startArea)
-  {
-    int32 x, y;
-    m_gameWorld.getTiledMap()->
-      getMapToScreenCoords(m_mouseClick.x, m_mouseClick.y, x, y);
-
-    int32 x1, y1;
-    x1 = sf::Mouse::getPosition(*m_window).x;
-    y1 = sf::Mouse::getPosition(*m_window).y;
-    
-    int32 sizeX = x1 - x;
-    int32 sizeY = y1 - y;
-
-    if ((sizeX > 50 && sizeY > 50) ||
-        (sizeX < -50 && sizeY < -50))
+    if (m_startArea)
     {
-      sf::RectangleShape rectangle(sf::Vector2f(sizeX, sizeY));
-      rectangle.setFillColor(sf::Color::Transparent);
-      rectangle.setOutlineThickness(1);
-      rectangle.setPosition(x + TILESIZE_X / 2, y + TILESIZE_Y / 2);
-      m_window->draw(rectangle);
-    }    
-  }
-//   else
-//   {
-//     m_window->setMouseCursorVisible(true); // Hide cursor
-//   }
+      int32 x, y;
+      m_gameWorld.getTiledMap()->
+        getMapToScreenCoords(m_mouseMapClick.x, m_mouseMapClick.y, x, y);
+      Vector2 v2;
+      v2.x = x;
+      v2.y = y;
 
-  //     sf::Text text;
-  //     text.setPosition(0.f, 30.f);
-  //     text.setFont(*m_arialFont);
-  //     text.setCharacterSize(24);
-  //     text.setFillColor(sf::Color::Red);
-  //     text.setString( toString(1.0f/g_time().getFrameDelta()).c_str() );
-  /*    m_window->draw(text);*/
+      int32 sizeX = mousePosition.x - (x + TILESIZE_X / 2);
+      int32 sizeY = mousePosition.y - (y + TILESIZE_Y / 2);
+
+      if ((sizeX > 50 && sizeY > 50) ||
+        (sizeX < -50 && sizeY < -50))
+      {
+        sf::RectangleShape rectangle(sf::Vector2f(sizeX, sizeY));
+        rectangle.setFillColor(sf::Color::Transparent);
+        rectangle.setOutlineThickness(1);
+
+        rectangle.setPosition(x + TILESIZE_X / 2, y + TILESIZE_Y / 2);
+        m_gameWorld.fillSelectedVector(v2, mousePosition);
+        
+        m_window->draw(rectangle);
+      }
+    }
+  }
+
+
 
   m_window->display();
 }

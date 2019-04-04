@@ -53,6 +53,9 @@ RTSWorld::init(sf::RenderTarget* pTarget) {
   m_unitTexture = std::make_shared<RTSTexture>() ;
   m_unitTexture->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/units.png");
 
+  m_selectedTex = std::make_shared<RTSTexture>();
+  m_selectedTex->loadFromFile(m_pTarget, "RTS/assets/game_objects/units/selected.png");
+
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
   m_lstUnitTypes.push_back(ge_new<RTSGame::RTSUnitType>());
@@ -209,7 +212,8 @@ void
 RTSWorld::createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY)
 {
   auto* unit = ge_new<RTSUnit>(m_unitTexture, 
-                               m_lstUnitTypes[unitType]->getAnimation());
+                               m_lstUnitTypes[unitType]->getAnimation(),
+                               m_selectedTex);
   unit->setPosition(posX, posY);
   m_lstUnits.push_back(unit);
 }
@@ -222,6 +226,37 @@ RTSWorld::clearUnits()
     ge_delete(it);
   }
   m_lstUnits.clear();
+}
+
+void RTSWorld::fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn)
+{
+  resetSelected();
+
+  int32 x, y;
+
+  for (auto& it : m_lstUnits)
+  {
+    m_pTiledMap->getMapToScreenCoords(it->getPosition().x, it->getPosition().y,
+                                      x, y);
+
+    if ((x >= topLftScrn.x &&
+        x <= botRightScrn.x) &&
+        (y <= botRightScrn.y &&
+        y >= topLftScrn.y))
+    {
+      m_selectedUnits.push_back(it);
+      it->setSelected(true);
+    }
+  }
+}
+
+void RTSWorld::resetSelected()
+{
+  for (auto& it : m_selectedUnits)
+  {
+    it->setSelected(false);
+  }
+  m_selectedUnits.clear();  
 }
 
 }

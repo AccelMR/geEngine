@@ -19,7 +19,8 @@ class RTSUnit
 {
 public:
   RTSUnit(const SPtr<RTSTexture>& _texture,
-          const Vector<Animation>& _animation);
+          const Vector<Animation>& _animation,
+          const SPtr<RTSTexture>& _selected);
 
   ~RTSUnit();
 
@@ -32,6 +33,18 @@ public:
   void
   setPosition(float x, float y);
 
+  void 
+  setSelected(bool selected)
+  {
+    m_isSelected = selected;
+  }
+
+  sf::Vector2f
+  getPosition() {
+    return m_position;
+  }
+
+
 private:
   sf::Vector2f m_position;
 
@@ -42,10 +55,13 @@ private:
   Vector<Animation> m_animation;
 
   const SPtr<RTSTexture> m_texture;
+  const SPtr<RTSTexture> m_selectedTex;
 
   STATE::E m_state;
 
   DIRECTIONS::E m_direction;
+
+  bool m_isSelected;
 
 };
 }

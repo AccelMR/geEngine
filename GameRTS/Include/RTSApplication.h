@@ -89,7 +89,7 @@ private:
   /*sf::Sprite    m_cursorSprite;*/
 
   
-  Vector2 m_mouseClick;
+  Vector2 m_mouseMapClick;
   Vector2 m_mouseRelease;
   bool    m_startArea;
 
