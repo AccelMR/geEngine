@@ -403,9 +403,6 @@ RTSApplication::renderFrame() {
       }
     }
   }
-
-
-
   m_window->display();
 }
 
@@ -506,22 +503,25 @@ mainMenu(RTSApplication* pApp) {
     ImGui::Text("Extra Windows");
     ImGui::Separator();
 
-    if(ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
+    if (!GameOptions::s_IsPlayActive)
     {
-      GameOptions::s_IsPathMenuActive = false;
-      GameOptions::s_IsUnitMenuActive = false;
-    }
+      if (ImGui::Checkbox("Activate Editor", &GameOptions::s_IsEditorActive))
+      {
+        GameOptions::s_IsPathMenuActive = false;
+        GameOptions::s_IsUnitMenuActive = false;
+      }
 
-    if(ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
-    {
-      GameOptions::s_IsEditorActive = false;
-      GameOptions::s_IsUnitMenuActive = false;
-    }
+      if (ImGui::Checkbox("Activate Path Finder", &GameOptions::s_IsPathMenuActive))
+      {
+        GameOptions::s_IsEditorActive = false;
+        GameOptions::s_IsUnitMenuActive = false;
+      }
 
-    if(ImGui::Checkbox("Active Unit Editor", &GameOptions::s_IsUnitMenuActive))
-    {
-      GameOptions::s_IsEditorActive = false;
-      GameOptions::s_IsPathMenuActive = false;
+      if (ImGui::Checkbox("Active Unit Editor", &GameOptions::s_IsUnitMenuActive))
+      {
+        GameOptions::s_IsEditorActive = false;
+        GameOptions::s_IsPathMenuActive = false;
+      }
     }
   }
   ImGui::End();
@@ -631,6 +631,15 @@ mainMenu(RTSApplication* pApp) {
       }
       ImGui::Separator();
       ImGui::Spacing();
+      
+      for (uint32 i = 1; i < TYPE_PATH_FINDER::NUMBOJ; i++)
+      {
+        ImGui::RadioButton(TYPE_PATH_FINDER::ES[i].c_str(),
+                           &g_iPathFinders,
+                           static_cast<TYPE_PATH_FINDER::E> (i));
+      }
+      ImGui::Spacing;
+
       if (ImGui::Button("unPlay", { 100, 50 }))
       {
         GameOptions::s_IsUnitMenuActive = true;
