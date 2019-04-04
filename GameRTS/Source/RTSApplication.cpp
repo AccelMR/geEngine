@@ -177,9 +177,7 @@ RTSApplication::gameLoop() {
         if(event.mouseButton.button == sf::Mouse::Left)
         {
           m_gameWorld.resetSelected();
-          if(!ImGui::IsAnyItemFocused() &&
-             !ImGui::IsMouseHoveringAnyWindow() &&
-             !ImGui::IsAnyItemHovered())
+          if(mouseOnWindow())
           {
             if (GameOptions::s_IsUnitMenuActive)
             {
@@ -209,14 +207,24 @@ RTSApplication::gameLoop() {
           }
 
         }
+
+        if (event.mouseButton.button == sf::Mouse::Right)
+        {
+          if (mouseOnWindow() && GameOptions::s_IsPlayActive)
+          {
+            m_gameWorld.setCurrentWalker(g_iPathFinders);
+            m_gameWorld.SetEndPos(tileX, tileY);
+            m_gameWorld.setStartForUnits();
+            m_gameWorld.ResetWalker();
+          }
+        }
+
         break;
 
       case sf::Event::MouseButtonReleased:
         if (GameOptions::s_IsPlayActive)
         {
-          if (!ImGui::IsAnyItemFocused() &&
-              !ImGui::IsMouseHoveringAnyWindow() &&
-              !ImGui::IsAnyItemHovered())
+          if (mouseOnWindow())
           {
             m_startArea = false;
             m_mouseRelease.x = tileX;
@@ -273,9 +281,7 @@ RTSApplication::updateFrame() {
   sf::Vector2i mousePos = sf::Mouse::getPosition();
   map->getScreenToMapCoords(mousePos.x, mousePos.y, tileX, tileY);
 
-  if(!ImGui::IsAnyItemFocused() &&
-     !ImGui::IsMouseHoveringAnyWindow() &&
-     !ImGui::IsAnyItemHovered())
+  if(mouseOnWindow())
   {
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
@@ -404,6 +410,14 @@ RTSApplication::renderFrame() {
     }
   }
   m_window->display();
+}
+
+bool
+RTSApplication::mouseOnWindow()
+{
+  return !ImGui::IsAnyItemFocused() &&
+         !ImGui::IsMouseHoveringAnyWindow() &&
+         !ImGui::IsAnyItemHovered();
 }
 
 void
@@ -609,6 +623,7 @@ mainMenu(RTSApplication* pApp) {
         GameOptions::s_IsPlayActive = true;
         pApp->getRenderWindow()->setMouseCursorVisible(false); // Hide cursor
         g_iUnitType = -1;
+        g_iPathFinders = 1;
         pApp->startMusic();
         pApp->setVolume(GameOptions::s_volume);
       }

@@ -395,10 +395,10 @@ RTSTiledMap::render() {
       }
       else
       {
-        int32 y = tmpY + (TILESIZE_Y >> 1) /*- refMark.getHeight()*/;
-        int32 x = tmpX + (TILESIZE_X >> 1);
-        refMark.setPosition(x, y);
-        refMark.draw();
+//         int32 y = tmpY + (TILESIZE_Y >> 1) /*- refMark.getHeight()*/;
+//         int32 x = tmpX + (TILESIZE_X >> 1);
+//         refMark.setPosition(x, y);
+//         refMark.draw();
       }
     }
   }

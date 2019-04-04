@@ -250,6 +250,20 @@ void RTSWorld::fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn)
   }
 }
 
+void
+RTSWorld::setStartForUnits()
+{
+  int32 x = 0, y = 0;
+  for (auto& it: m_selectedUnits)
+  {
+    x += it->getPosition().x;
+    y += it->getPosition().y;
+  }
+  x /= m_selectedUnits.size();
+  y /= m_selectedUnits.size();
+  SetStartPos(x, y);
+}
+
 void RTSWorld::resetSelected()
 {
   for (auto& it : m_selectedUnits)

@@ -77,6 +77,9 @@ private:
   void
     renderFrame();
 
+  bool
+  mouseOnWindow();
+
 
 
 

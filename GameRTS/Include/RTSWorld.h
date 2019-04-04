@@ -72,7 +72,11 @@ public:
     return m_unitTexture;
   }
 
-  void fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn);
+  void 
+  fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn);
+
+  void
+  setStartForUnits();
 
   void 
   resetSelected();
