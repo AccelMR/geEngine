@@ -13,7 +13,8 @@ namespace RTSGame{
     m_elapsedTime(0),
     m_frameCount(0),
     m_isSelected(false),
-    m_selectedTex(_selected)
+    m_selectedTex(_selected),
+    m_gottaMove(false)
   {
     m_selectedTex->setScale(.028, .03 / 2);
     m_selectedTex->setRotation(Degree(30));
@@ -31,6 +32,29 @@ void
 RTSUnit::update(float deltaTime)
 {
   m_elapsedTime += deltaTime;
+
+  if (m_gottaMove)
+  {
+    if (m_position != m_movingTo)
+    {
+      Vector2I dir = m_movingTo - m_position;
+      m_position += dir;
+
+    }
+    else
+    {
+      if (m_path.empty())
+      {
+        m_gottaMove = false;
+      }
+      else
+      {
+        m_movingTo = m_path.back();
+        m_path.pop_back();
+      }
+    }
+
+  }
 }
 
 /*

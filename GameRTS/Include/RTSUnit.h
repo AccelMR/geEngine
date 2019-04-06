@@ -33,13 +33,18 @@ public:
   void
   setPosition(float x, float y);
 
+  void
+  setMove(bool move) {
+    m_gottaMove = move;
+  }
+
   void 
   setSelected(bool selected)
   {
     m_isSelected = selected;
   }
 
-  sf::Vector2f
+  Vector2I
   getPosition() {
     return m_position;
   }
@@ -47,10 +52,12 @@ public:
   void
   setPath(Vector<Vector2I> _path) {
     m_path = _path;
+    m_movingTo = m_path.back();
+    m_path.pop_back();
   }
 
 private:
-  sf::Vector2f m_position;
+  Vector2I m_position;
 
   float m_elapsedTime;
 
@@ -59,6 +66,7 @@ private:
   Vector<Animation> m_animation;
 
   Vector<Vector2I> m_path;
+  Vector2I m_movingTo;
 
   const SPtr<RTSTexture> m_texture;
   const SPtr<RTSTexture> m_selectedTex;
@@ -68,6 +76,8 @@ private:
   DIRECTIONS::E m_direction;
 
   bool m_isSelected;
+
+  bool m_gottaMove;
 
 };
 }

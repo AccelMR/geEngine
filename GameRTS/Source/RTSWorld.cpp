@@ -280,20 +280,21 @@ void RTSWorld::fillUnitPaths()
 
   for (auto& it: m_lstUnits)
   {
-    ResetWalker();
     SetStartPos(it->getPosition().x, it->getPosition().y);
 
     Vector2I B;
-    B.x = it->getPosition().x - path[path.size()].x;
-    B.y = it->getPosition().y - path[path.size()].y;
+    B.x = it->getPosition().x - path[path.size() - 1].x;
+    B.y = it->getPosition().y - path[path.size() - 1].y;
 
     Vector2I v3 = path[0] + B;
 
     SetEndPos(v3.x, v3.y);
+    ResetWalker();
 
     m_activeWalker->Update();
 
     it->setPath(m_activeWalker->BackTracing());
+    it->setMove(true);
   }
 }
 
