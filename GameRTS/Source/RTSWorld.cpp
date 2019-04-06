@@ -104,27 +104,27 @@ void
 RTSWorld::update(float deltaTime) {
   m_pTiledMap->update(deltaTime);
 
-  if(m_activeWalker->GetState() == WALKSTATE::STILLLOOKING)
-  {
-    m_activeWalker->Update();
-  }
+//   if(m_activeWalker->GetState() == WALKSTATE::STILLLOOKING)
+//   {
+//     m_activeWalker->Update();
+//   }
 
-  else if(m_activeWalker->GetState() == WALKSTATE::REACHEDGOAL)
-  {
-    if(m_path.empty())
-    {
-      m_path = m_activeWalker->BackTracing();
-      m_drawPath.resize(m_path.size());
-    }
-
-    int32  x, y;
-    for(int32 i = 0; i < m_path.size(); ++i)
-    {
-      m_pTiledMap->getMapToScreenCoords(m_path[i].x, m_path[i].y, x, y);
-      sf::Vertex v(sf::Vector2f(x + (TILESIZE_X >> 1), y + (TILESIZE_Y >> 1)), sf::Color::White);
-      m_drawPath[i] = v;
-    }
-  }
+//   else if(m_activeWalker->GetState() == WALKSTATE::REACHEDGOAL)
+//   {
+//     if(m_path.empty())
+//     {
+//       m_path = m_activeWalker->BackTracing();
+//       m_drawPath.resize(m_path.size());
+//     }
+// 
+//     int32  x, y;
+//     for(int32 i = 0; i < m_path.size(); ++i)
+//     {
+//       m_pTiledMap->getMapToScreenCoords(m_path[i].x, m_path[i].y, x, y);
+//       sf::Vertex v(sf::Vector2f(x + (TILESIZE_X >> 1), y + (TILESIZE_Y >> 1)), sf::Color::White);
+//       m_drawPath[i] = v;
+//     }
+//   }
 
   for(auto & it : m_lstUnits)
   {
@@ -271,6 +271,30 @@ void RTSWorld::resetSelected()
     it->setSelected(false);
   }
   m_selectedUnits.clear();  
+}
+
+void RTSWorld::fillUnitPaths()
+{
+  m_activeWalker->Update();
+  Vector<Vector2I> path =  m_activeWalker->BackTracing();
+
+  for (auto& it: m_lstUnits)
+  {
+    ResetWalker();
+    SetStartPos(it->getPosition().x, it->getPosition().y);
+
+    Vector2I B;
+    B.x = it->getPosition().x - path[path.size()].x;
+    B.y = it->getPosition().y - path[path.size()].y;
+
+    Vector2I v3 = path[0] + B;
+
+    SetEndPos(v3.x, v3.y);
+
+    m_activeWalker->Update();
+
+    it->setPath(m_activeWalker->BackTracing());
+  }
 }
 
 }

@@ -98,6 +98,8 @@ private:
 
   sf::Music m_music;
 
+  sf::VertexArray m_drawPath;
+
   float m_fpsTimer;
   float m_fpsCounter;
   float m_framesPerSecond;

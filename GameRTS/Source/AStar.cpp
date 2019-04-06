@@ -54,91 +54,93 @@ void AStar::Destroy()
   m_nodeGrid = nullptr;
 }
 
-WALKSTATE::E AStar::Update()
+WALKSTATE::E 
+AStar::Update()
 {
-  if(m_open.size() > 0)
+  while (m_currentState == WALKSTATE::STILLLOOKING)
   {
-    m_use = m_open.front().position;
-    m_closeD.push_back({ m_use,m_open.front().parent, m_open.front().weight });
+//     if (m_open.size() > 0)
+//     {
+      m_use = m_open.front().position;
+      m_closeD.push_back({ m_use,m_open.front().parent, m_open.front().weight });
 
-    m_open.pop_front();
-    m_nodeGrid->setVisited(m_use.x, m_use.y, true);
+      m_open.pop_front();
+      m_nodeGrid->setVisited(m_use.x, m_use.y, true);
 
-    if(m_use == m_end)
-    {
-      m_currentState = WALKSTATE::REACHEDGOAL;
-      return m_currentState;
-    }
-    if(m_use != m_start)
-    {
-      m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
-    }
+      if (m_use == m_end)
+      {
+        m_currentState = WALKSTATE::REACHEDGOAL;
+        break;
+      }
+      if (m_use != m_start)
+      {
+        m_nodeGrid->setMark(m_use.x, m_use.y, PFMARK::N);
+      }
 
-    int32 x, y;
-    x = m_use.x + 1;
-    y = m_use.y;
-    if(m_use.x < (m_pTiledMap->getMapSize().x - 1))
-    {
-      visitGridNode(x, y);
-    }
+      int32 x, y;
+      x = m_use.x + 1;
+      y = m_use.y;
+      if (m_use.x < (m_pTiledMap->getMapSize().x - 1))
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x + 1;
-    y = m_use.y + 1;
-    if(m_use.x < (m_pTiledMap->getMapSize().x - 1) &&
-       m_use.y < (m_pTiledMap->getMapSize().y - 1))
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x + 1;
+      y = m_use.y + 1;
+      if (m_use.x < (m_pTiledMap->getMapSize().x - 1) &&
+          m_use.y < (m_pTiledMap->getMapSize().y - 1))
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x;
-    y = m_use.y + 1;
-    if(m_use.y < (m_pTiledMap->getMapSize().y - 1))
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x;
+      y = m_use.y + 1;
+      if (m_use.y < (m_pTiledMap->getMapSize().y - 1))
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x - 1;
-    y = m_use.y + 1;
-    if(m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x - 1;
+      y = m_use.y + 1;
+      if (m_use.y < (m_pTiledMap->getMapSize().y - 1) && m_use.x > 0)
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x - 1;
-    y = m_use.y;
-    if(m_use.x > 0)
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x - 1;
+      y = m_use.y;
+      if (m_use.x > 0)
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x - 1;
-    y = m_use.y - 1;
-    if(m_use.x > 0 && m_use.y > 0)
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x - 1;
+      y = m_use.y - 1;
+      if (m_use.x > 0 && m_use.y > 0)
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x;
-    y = m_use.y - 1;
-    if(m_use.y > 0)
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x;
+      y = m_use.y - 1;
+      if (m_use.y > 0)
+      {
+        visitGridNode(x, y);
+      }
 
-    x = m_use.x + 1;
-    y = m_use.y - 1;
-    if(m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
-    {
-      visitGridNode(x, y);
-    }
+      x = m_use.x + 1;
+      y = m_use.y - 1;
+      if (m_use.y > 0 && m_use.x < (m_pTiledMap->getMapSize().x - 1))
+      {
+        visitGridNode(x, y);
+      }
 
-    m_currentState = WALKSTATE::STILLLOOKING;
-    return m_currentState;
+      m_currentState = WALKSTATE::STILLLOOKING;
+    //}
+
+    /*m_currentState = WALKSTATE::UNABLETOREACHGOAL;*/
   }
-
-  m_currentState = WALKSTATE::UNABLETOREACHGOAL;
-  return m_currentState;
-
+  return WALKSTATE::REACHEDGOAL;
 }
 
 void AStar::Render()

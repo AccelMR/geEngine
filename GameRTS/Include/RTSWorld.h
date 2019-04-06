@@ -81,6 +81,8 @@ public:
   void 
   resetSelected();
 
+  void fillUnitPaths();
+
  private:
   RTSTiledMap* m_pTiledMap;
 

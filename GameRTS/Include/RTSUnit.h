@@ -44,6 +44,10 @@ public:
     return m_position;
   }
 
+  void
+  setPath(Vector<Vector2I> _path) {
+    m_path = _path;
+  }
 
 private:
   sf::Vector2f m_position;
@@ -53,6 +57,8 @@ private:
   uint32 m_frameCount;
 
   Vector<Animation> m_animation;
+
+  Vector<Vector2I> m_path;
 
   const SPtr<RTSTexture> m_texture;
   const SPtr<RTSTexture> m_selectedTex;

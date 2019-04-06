@@ -216,6 +216,18 @@ RTSApplication::gameLoop() {
             m_gameWorld.SetEndPos(tileX, tileY);
             m_gameWorld.setStartForUnits();
             m_gameWorld.ResetWalker();
+            m_gameWorld.fillUnitPaths();
+           
+//             auto m_path = m_gameWorld.getPathFinder();
+//             int32  x, y;
+//             m_drawPath.resize(m_path.size());
+//             for (int32 i = 0; i < m_path.size(); ++i)
+//             {
+//               m_gameWorld.getTiledMap()->getMapToScreenCoords(m_path[i].x, m_path[i].y, x, y);
+//               sf::Vertex v(sf::Vector2f(x + (TILESIZE_X >> 1), y + (TILESIZE_Y >> 1)), sf::Color::White);
+//               m_drawPath[i] = v;
+//             }
+            
           }
         }
 
@@ -409,6 +421,7 @@ RTSApplication::renderFrame() {
       }
     }
   }
+  m_window->draw(m_drawPath);
   m_window->display();
 }
 
