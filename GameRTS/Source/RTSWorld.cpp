@@ -128,7 +128,7 @@ RTSWorld::update(float deltaTime) {
 
   for(auto & it : m_lstUnits)
   {
-    it->update(deltaTime);
+    it->update(deltaTime, m_pTiledMap);
   }
 
 }
@@ -253,15 +253,18 @@ void RTSWorld::fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn)
 void
 RTSWorld::setStartForUnits()
 {
-  int32 x = 0, y = 0;
-  for (auto& it: m_selectedUnits)
+  if (!m_selectedUnits.empty())
   {
-    x += it->getPosition().x;
-    y += it->getPosition().y;
+    int32 x = 0, y = 0;
+    for (auto& it : m_selectedUnits)
+    {
+      x += it->getPosition().x;
+      y += it->getPosition().y;
+    }
+    x /= m_selectedUnits.size();
+    y /= m_selectedUnits.size();
+    SetStartPos(x, y);
   }
-  x /= m_selectedUnits.size();
-  y /= m_selectedUnits.size();
-  SetStartPos(x, y);
 }
 
 void RTSWorld::resetSelected()
@@ -275,26 +278,29 @@ void RTSWorld::resetSelected()
 
 void RTSWorld::fillUnitPaths()
 {
-  m_activeWalker->Update();
-  Vector<Vector2I> path =  m_activeWalker->BackTracing();
-
-  for (auto& it: m_lstUnits)
+  if (!m_selectedUnits.empty())
   {
-    SetStartPos(it->getPosition().x, it->getPosition().y);
-
-    Vector2I B;
-    B.x = it->getPosition().x - path[path.size() - 1].x;
-    B.y = it->getPosition().y - path[path.size() - 1].y;
-
-    Vector2I v3 = path[0] + B;
-
-    SetEndPos(v3.x, v3.y);
-    ResetWalker();
-
     m_activeWalker->Update();
+    Vector<Vector2I> path = m_activeWalker->BackTracing();
 
-    it->setPath(m_activeWalker->BackTracing());
-    it->setMove(true);
+    for (auto& it : m_lstUnits)
+    {
+      SetStartPos(it->getPosition().x, it->getPosition().y);
+
+      Vector2I B;
+      B.x = it->getPosition().x - path[path.size() - 1].x;
+      B.y = it->getPosition().y - path[path.size() - 1].y;
+
+      Vector2I v3 = path[0] + B;
+
+      SetEndPos(v3.x, v3.y);
+      ResetWalker();
+
+      m_activeWalker->Update();
+
+      it->setPath(m_activeWalker->BackTracing());
+      it->setMove(true);
+    }
   }
 }
 

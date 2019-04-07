@@ -25,13 +25,19 @@ public:
   ~RTSUnit();
 
   void
-  update(float deltaTime);
+  update(float deltaTime, RTSTiledMap* tiledMap);
 
   void
   render(RTSTiledMap* tiledMap);
 
   void
   setPosition(float x, float y);
+
+  void
+  getTileCoord(const int32 mapX,
+               const int32 mapY,
+               int32 &scrX,
+               int32 &scrY);
 
   void
   setMove(bool move) {
@@ -44,9 +50,9 @@ public:
     m_isSelected = selected;
   }
 
-  Vector2I
+  Vector2
   getPosition() {
-    return m_position;
+    return m_tiledPos;
   }
 
   void
@@ -57,9 +63,11 @@ public:
   }
 
 private:
-  Vector2I m_position;
+  Vector2 m_tiledPos;
 
   float m_elapsedTime;
+
+  float m_velocity;
 
   uint32 m_frameCount;
 

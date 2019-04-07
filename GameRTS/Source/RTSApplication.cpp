@@ -203,6 +203,7 @@ RTSApplication::gameLoop() {
               m_startArea = true;
               m_mouseMapClick.x = tileX;
               m_mouseMapClick.y = tileY;
+              m_gameWorld.resetSelected();
             }
           }
 
