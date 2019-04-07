@@ -144,7 +144,7 @@ RTSApplication::gameLoop() {
   // Load image and create sprite
   m_cursorTexture = ge_new<RTSTexture>();
   m_cursorTexture->loadFromFile(m_window, "Textures/GUI/hand.png");
-  m_cursorTexture->setScale(.10, .10);
+  m_cursorTexture->setScale(.10f, .10f);
   m_cursorTexture->setOrigin(m_cursorTexture->getWidth() / 8.f,
                              m_cursorTexture->getHeight() / 15.f);
 
@@ -201,8 +201,8 @@ RTSApplication::gameLoop() {
             if (GameOptions::s_IsPlayActive)
             {
               m_startArea = true;
-              m_mouseMapClick.x = tileX;
-              m_mouseMapClick.y = tileY;
+              m_mouseMapClick.x = static_cast<float>(tileX);
+              m_mouseMapClick.y = static_cast<float>(tileY);
               m_gameWorld.resetSelected();
             }
           }
@@ -213,7 +213,7 @@ RTSApplication::gameLoop() {
         {
           if (mouseOnWindow() && GameOptions::s_IsPlayActive)
           {
-            m_gameWorld.setCurrentWalker(g_iPathFinders);
+            m_gameWorld.setCurrentWalker(static_cast<int8>(g_iPathFinders));
             m_gameWorld.SetEndPos(tileX, tileY);
             m_gameWorld.setStartForUnits();
             m_gameWorld.ResetWalker();
@@ -240,8 +240,8 @@ RTSApplication::gameLoop() {
           if (mouseOnWindow())
           {
             m_startArea = false;
-            m_mouseRelease.x = tileX;
-            m_mouseRelease.y = tileY;
+            m_mouseRelease.x = static_cast<float>(tileX);
+            m_mouseRelease.y = static_cast<float>(tileY);
           }
         }
         break;
@@ -302,11 +302,11 @@ RTSApplication::updateFrame() {
       if(GameOptions::s_IsEditorActive)
       {
 
-        for(uint32 i = 0; i < GameOptions::s_SizeOfBrush; i++)
+        for(int32 i = 0; i < GameOptions::s_SizeOfBrush; i++)
         {
-          for(uint32 j = 0; j < GameOptions::s_SizeOfBrush; j++)
+          for(int32 j = 0; j < GameOptions::s_SizeOfBrush; j++)
           {
-            map->setType(tileX + i, tileY + j, g_iTerrainSelected);
+            map->setType(tileX + i, tileY + j, static_cast<int8>(g_iTerrainSelected));
             map->setCost(tileX + i, tileY + j, TERRAIN_TYPE::Cost[g_iTerrainSelected]);
           }
         }
@@ -316,7 +316,7 @@ RTSApplication::updateFrame() {
       if(GameOptions::s_IsPathMenuActive)
       {
 
-        map->setMark(tileX, tileY, g_iStartSelection);
+        map->setMark(tileX, tileY, static_cast<int8>(g_iStartSelection));
 
         if(g_iStartSelection == PFMARK::START)
         {
@@ -391,8 +391,8 @@ RTSApplication::renderFrame() {
   if (GameOptions::s_IsPlayActive)
   {
     Vector2 mousePosition;
-    mousePosition.x = sf::Mouse::getPosition(*m_window).x;
-    mousePosition.y = sf::Mouse::getPosition(*m_window).y;
+    mousePosition.x = static_cast<float>(sf::Mouse::getPosition(*m_window).x);
+    mousePosition.y = static_cast<float>(sf::Mouse::getPosition(*m_window).y);
     m_cursorTexture->setPosition(mousePosition);
     m_cursorTexture->draw();
 
@@ -400,13 +400,15 @@ RTSApplication::renderFrame() {
     {
       int32 x, y;
       m_gameWorld.getTiledMap()->
-        getMapToScreenCoords(m_mouseMapClick.x, m_mouseMapClick.y, x, y);
+        getMapToScreenCoords(static_cast<const int32>(m_mouseMapClick.x), 
+                             static_cast<const int32>(m_mouseMapClick.y),
+                             x, y);
       Vector2 v2;
-      v2.x = x;
-      v2.y = y;
+      v2.x = static_cast<float>(x);
+      v2.y = static_cast<float>(y);
 
-      int32 sizeX = mousePosition.x - (x + TILESIZE_X / 2);
-      int32 sizeY = mousePosition.y - (y + TILESIZE_Y / 2);
+      float sizeX = mousePosition.x - (x + TILESIZE_X / 2);
+      float sizeY = mousePosition.y - (y + TILESIZE_Y / 2);
 
       if ((sizeX > 50 && sizeY > 50) ||
         (sizeX < -50 && sizeY < -50))
@@ -415,7 +417,7 @@ RTSApplication::renderFrame() {
         rectangle.setFillColor(sf::Color::Transparent);
         rectangle.setOutlineThickness(1);
 
-        rectangle.setPosition(x + TILESIZE_X / 2, y + TILESIZE_Y / 2);
+        rectangle.setPosition(x + TILESIZE_X / 2.f, y + TILESIZE_Y / 2.f);
         m_gameWorld.fillSelectedVector(v2, mousePosition);
         
         m_window->draw(rectangle);
@@ -603,7 +605,7 @@ mainMenu(RTSApplication* pApp) {
       /*ImGui::Spacing(5);*/
       if(ImGui::Button("Start", { 200, 50 }))
       {
-        pApp->getWorld()->setCurrentWalker(g_iPathFinders);
+        pApp->getWorld()->setCurrentWalker(static_cast<int8>(g_iPathFinders));
         pApp->getWorld()->ResetWalker();
       }
 
@@ -667,7 +669,7 @@ mainMenu(RTSApplication* pApp) {
                            &g_iPathFinders,
                            static_cast<TYPE_PATH_FINDER::E> (i));
       }
-      ImGui::Spacing;
+      ImGui::Spacing();
 
       if (ImGui::Button("unPlay", { 100, 50 }))
       {

@@ -47,7 +47,7 @@ public:
 
   void 
     setVolume(int vol){
-    m_music.setVolume(vol);
+    m_music.setVolume(static_cast<float>(vol));
   }
 
 protected:

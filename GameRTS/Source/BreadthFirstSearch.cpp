@@ -131,6 +131,7 @@ WALKSTATE::E BreadthFirstSearch::Update()
     m_currentState = WALKSTATE::UNABLETOREACHGOAL;
     return m_currentState;
   }
+  return WALKSTATE::UNABLETOREACHGOAL;
 }
 
 void BreadthFirstSearch::Render()
@@ -168,9 +169,9 @@ void BreadthFirstSearch::visitGridNode(int32 x, int32 y)
 
   Vector2I v(x, y);  
 
-  for (int i = 0; i < m_open.size(); ++i)
+  for (auto& it: m_open)
   {
-    if (m_open[i].position == v)
+    if (it.position == v)
     {
       return;
     }

@@ -3,7 +3,7 @@
 #include "RTSTiledMap.h"
 namespace RTSGame{
 namespace WALKSTATE{
-typedef enum E
+enum E
 {
   STILLLOOKING,
   REACHEDGOAL,

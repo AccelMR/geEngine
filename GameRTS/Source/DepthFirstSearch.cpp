@@ -151,14 +151,15 @@ void DepthFirstSearch::visitGridNode(int32 x, int32 y)
   {
     return;
   }
-
-  for(int i = 0; i < m_open.size(); ++i)
+  
+  for (auto& it:m_open)
   {
-    if(m_open[i].position == v)
+    if(it.position == v)
     {
       return;
     }
   }
+
   m_open.push_back({ v, m_use });
 }
 }

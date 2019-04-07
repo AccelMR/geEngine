@@ -46,10 +46,10 @@ class GameOptions : public Module<GameOptions>
   static bool s_IsUnitMenuActive;
   static bool s_IsPlayActive;
 
-  static int s_SizeOfBrush;
+  static int32 s_SizeOfBrush;
 
   //Path finders
-  static int s_PathFinderSelected;
+  static int32 s_PathFinderSelected;
   
   static Color s_MapGridColor;
 

@@ -149,11 +149,9 @@ public:
   void
     setMark(const int32 x, const int32 y, const uint8 mark);
 
-  void
-    setVisited(const uint32 x, const uint32 y, const bool visited);
+  void setVisited(const int32 x, const int32 y, const bool visited);
 
-  bool
-    getVisited(const uint32 x, const uint32 y);
+  bool getVisited(const int32 x, const int32 y);
 
   uint8
     getMark(const int32 x, const int32 y) const;

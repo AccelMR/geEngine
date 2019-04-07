@@ -18,7 +18,7 @@ namespace RTSGame{
     m_velocity(5)
   {
 #ifdef MAP_IS_ISOMETRIC
-    m_selectedTex->setScale(.028, .03 / 2);
+    m_selectedTex->setScale(.028f, .03f / 2.f);
     m_selectedTex->setRotation(Degree(30));
 #else
     m_selectedTex->setScale(.03, .03);
@@ -36,6 +36,7 @@ RTSUnit::~RTSUnit()
 void
 RTSUnit::update(float deltaTime, RTSTiledMap* tiledMap)
 {
+  tiledMap;
   m_elapsedTime += deltaTime;
 
   if (m_gottaMove)
@@ -43,11 +44,13 @@ RTSUnit::update(float deltaTime, RTSTiledMap* tiledMap)
     m_state = STATE::kRun;
 //     int32 x, y;
 //     tiledMap->getMapToScreenCoords(m_movingTo.x, m_movingTo.y, x, y);
-    Vector2 v(m_movingTo.x, m_movingTo.y);
+    Vector2 v(static_cast<float>(m_movingTo.x), static_cast<float>(m_movingTo.y));
 
     float trashx, trashy;
     float Rx = std::modf(m_tiledPos.x, &trashx);
     float Ry = std::modf(m_tiledPos.y, &trashy);
+    Rx;
+    Ry;
 
     Vector2 tiled(trashx, trashy);
     if(Math::isNearlyEqual(v.x, m_tiledPos.x, .1f))
@@ -102,7 +105,9 @@ RTSUnit::render(RTSTiledMap* tiledMap)
   Rx *= TILESIZE_X;
   Ry *= TILESIZE_Y;
 
-  tiledMap->getMapToScreenCoords(m_tiledPos.x, m_tiledPos.y, x, y);
+  tiledMap->getMapToScreenCoords(static_cast<int32>(trashx), 
+                                 static_cast<int32>(trashy),
+                                 x, y);
 
 #ifdef MAP_IS_ISOMETRIC
   m_texture->setPosition(x + Rx - (currentFrame.w / 2),
@@ -142,11 +147,11 @@ RTSUnit::setPosition(float x, float y)
   m_tiledPos.y = m_worldPos.y / TILESIZE_Y;
 }
 
-void 
-RTSUnit::getTileCoord(const int32 mapX, const int32 mapY, 
-                      int32 &scrX, int32 &scrY)
-{
-
-}
+// void 
+// RTSUnit::getTileCoord(const int32 mapX, const int32 mapY, 
+//                       int32 &scrX, int32 &scrY)
+// {
+// 
+// }
 
 }

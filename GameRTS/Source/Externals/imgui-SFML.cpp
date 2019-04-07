@@ -146,6 +146,7 @@ void Init(sf::RenderWindow & window, bool loadDefaultFont)
 
 void Init(sf::Window & window, sf::RenderTarget & target, bool loadDefaultFont)
 {
+  window;
   ImGui::CreateContext();
 
   ImGuiIO& io = ImGui::GetIO();

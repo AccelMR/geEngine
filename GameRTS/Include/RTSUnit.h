@@ -33,11 +33,11 @@ public:
   void
   setPosition(float x, float y);
 
-  void
-  getTileCoord(const int32 mapX,
-               const int32 mapY,
-               int32 &scrX,
-               int32 &scrY);
+//   void
+//   getTileCoord(const int32 mapX,
+//                const int32 mapY,
+//                int32 &scrX,
+//                int32 &scrY);
 
   void
   setMove(bool move) {

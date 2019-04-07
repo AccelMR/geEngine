@@ -132,15 +132,13 @@ RTSTiledMap::setMark(const int32 x, const int32 y, const uint8 mark){
   m_mapGrid[(y*m_mapSize.x) + x].setMark(mark);
 }
 
-void
-RTSTiledMap::setVisited(const uint32 x, const uint32 y, const bool visited)
+void RTSTiledMap::setVisited(const int32 x, const int32 y, const bool visited)
 {
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   m_mapGrid[(y*m_mapSize.x) + x].setVisited(visited);
 }
 
-bool
-RTSTiledMap::getVisited(const uint32 x, const uint32 y)
+bool RTSTiledMap::getVisited(const int32 x, const int32 y)
 {
   GE_ASSERT((x >= 0) && (x < m_mapSize.x) && (y >= 0) && (y < m_mapSize.y));
   return m_mapGrid[(y*m_mapSize.x) + x].getVisited();

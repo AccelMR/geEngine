@@ -158,20 +158,23 @@ WALKSTATE::E Dijkstra::Update()
 void Dijkstra::Render()
 {
   sf::Text text;
-  int32 x, y = 0;
+  /*int32 x, y = 0;*/
 
   text.setCharacterSize(12);
   text.setFillColor(sf::Color::Black);
   text.setFont(*m_arialFont);
 
-  int32 tmpX = 0;
-  int32 tmpY = 0;
-  int32 tmpTypeTile = 0;
-  int32 tmpMarkTile = 0;
-  Vector2I clipRect;
+//   int32 tmpX = 0;
+//   int32 tmpY = 0;
+//   int32 tmpTypeTile = 0;
+  /*int32 tmpMarkTile = 0;*/
+  /*Vector2I clipRect;*/
 
-  int32 tileIniX = 0, tileIniY = 0;
-  int32 tileFinX = 0, tileFinY = 0;
+//   int32 tileIniX = 0; 
+//   int32 tileFinX = 0; 
+  
+  int32 tileIniY = 0;  
+  int32 tileFinY = 0;
 
 #ifdef MAP_IS_ISOMETRIC
   int32 trashCoord = 0;

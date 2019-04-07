@@ -214,7 +214,7 @@ RTSWorld::createUnit(UNIT_TYPE::E unitType, int32 posX, int32 posY)
   auto* unit = ge_new<RTSUnit>(m_unitTexture, 
                                m_lstUnitTypes[unitType]->getAnimation(),
                                m_selectedTex);
-  unit->setPosition(posX, posY);
+  unit->setPosition(static_cast<float>(posX), static_cast<float>(posY));
   m_lstUnits.push_back(unit);
 }
 
@@ -236,7 +236,8 @@ void RTSWorld::fillSelectedVector(Vector2 topLftScrn, Vector2 botRightScrn)
 
   for (auto& it : m_lstUnits)
   {
-    m_pTiledMap->getMapToScreenCoords(it->getPosition().x, it->getPosition().y,
+    m_pTiledMap->getMapToScreenCoords(static_cast<int32>(it->getPosition().x), 
+                                      static_cast<int32>(it->getPosition().y),
                                       x, y);
 
     if ((x >= topLftScrn.x &&
@@ -258,8 +259,8 @@ RTSWorld::setStartForUnits()
     int32 x = 0, y = 0;
     for (auto& it : m_selectedUnits)
     {
-      x += it->getPosition().x;
-      y += it->getPosition().y;
+      x += static_cast<int32>(it->getPosition().x);
+      y += static_cast<int32>(it->getPosition().y);
     }
     x /= m_selectedUnits.size();
     y /= m_selectedUnits.size();
@@ -285,11 +286,12 @@ void RTSWorld::fillUnitPaths()
 
     for (auto& it : m_lstUnits)
     {
-      SetStartPos(it->getPosition().x, it->getPosition().y);
+      SetStartPos(static_cast<int32>(it->getPosition().x), 
+                  static_cast<int32>(it->getPosition().y));
 
       Vector2I B;
-      B.x = it->getPosition().x - path[path.size() - 1].x;
-      B.y = it->getPosition().y - path[path.size() - 1].y;
+      B.x = static_cast<int32>(it->getPosition().x - path[path.size() - 1].x);
+      B.y = static_cast<int32>(it->getPosition().y - path[path.size() - 1].y);
 
       Vector2I v3 = path[0] + B;
 
