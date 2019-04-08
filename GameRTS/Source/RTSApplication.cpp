@@ -201,8 +201,8 @@ RTSApplication::gameLoop() {
             if (GameOptions::s_IsPlayActive)
             {
               m_startArea = true;
-              m_mouseMapClick.x = static_cast<float>(tileX);
-              m_mouseMapClick.y = static_cast<float>(tileY);
+              m_mouseMapClick.x = static_cast<float>(mousePos.x);
+              m_mouseMapClick.y = static_cast<float>(mousePos.y);
               m_gameWorld.resetSelected();
             }
           }
@@ -399,10 +399,12 @@ RTSApplication::renderFrame() {
     if (m_startArea)
     {
       int32 x, y;
-      m_gameWorld.getTiledMap()->
-        getMapToScreenCoords(static_cast<const int32>(m_mouseMapClick.x), 
-                             static_cast<const int32>(m_mouseMapClick.y),
-                             x, y);
+      x = m_mouseMapClick.x;
+      y = m_mouseMapClick.y;
+//       m_gameWorld.getTiledMap()->
+//         getMapToScreenCoords(static_cast<const int32>(m_mouseMapClick.x), 
+//                              static_cast<const int32>(m_mouseMapClick.y),
+//                              x, y);
       Vector2 v2;
       v2.x = static_cast<float>(x);
       v2.y = static_cast<float>(y);
